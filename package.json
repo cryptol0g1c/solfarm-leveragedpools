@@ -1,0 +1,32 @@
+{
+  "name": "solfarm-leveragedpools",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cryptol0g1c/solfarm-leveragedpools.git"
+  },
+  "keywords": [
+    "solfarm",
+    "leveraged",
+    "pools"
+  ],
+  "author": "Cryptologic",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cryptol0g1c/solfarm-leveragedpools/issues"
+  },
+  "homepage": "https://github.com/cryptol0g1c/solfarm-leveragedpools#readme",
+  "dependencies": {
+    "@project-serum/borsh": "^0.2.2",
+    "@project-serum/serum": "^0.13.60",
+    "@solana/web3.js": "^1.29.2",
+    "axios": "^0.21.4",
+    "bn.js": "^5.2.0",
+    "buffer-layout": "^1.2.2"
+  }
+}
