@@ -23,6 +23,7 @@ const main = async () => {
       "C3sT1R3nsw4AVdepvLTLKr5Gvszr7jufyBWUCvy4TUvT",//Address of LP Mint programm
       "3wqhzSB9avepM9xMteiZnbJw75zmTBDVmPFLTQAGcSMN",//Address of reserves0 token
       "5GtSbKJEPaoumrDzNj4kGkgZtfDyUceKaHrPziazALC1",//Address of reserves1 token
+      3,//RAY POOL VERSION (as seen in the pool object)
       RESERVE_0_PRICE,//reserve0 usd price}
       RESERVE_1_PRICE//reserve1 usd price
     );
@@ -31,7 +32,7 @@ const main = async () => {
     console.log("Debt:", debt);
     console.log("VirtualValue:", virtualValue);
     console.log("Value:", value);
-    
+
     return {
       borrowed, virtualValue, value
     };

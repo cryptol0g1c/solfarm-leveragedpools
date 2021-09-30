@@ -12,13 +12,14 @@ const {
   MINT_LAYOUT,
   LENDING_OBLIGATION_LAYOUT,
   AMM_INFO_LAYOUT_V3,
+  AMM_INFO_LAYOUT_V4
 } = require("./config.js");
 
 
 /**
- * 
+ *
  * @param {Account address to get info from} _address returns information of the account address using Solana RPC
- * @returns 
+ * @returns
  */
 const getAccountInfo = async (_address) => {
 
@@ -54,7 +55,7 @@ const getAccountInfo = async (_address) => {
 };
 
 /**
- * 
+ *
  * @param {Address to convert to PubKey} _address Base58
  * @returns PubKey
  */
@@ -69,12 +70,12 @@ const b58AddressToPubKey = (_address) => {
 };
 
 /**
- * 
+ *
  * @param {Authority address} authority base58
  * @param {Solfarm leveraged address } programId base58
  * @param {0 as of now} index number
  * @param {farm IDs as show on FARM object} farm number
- * @returns 
+ * @returns
  */
 const findUserFarmAddress = async (
   authority,
@@ -100,12 +101,12 @@ const findUserFarmAddress = async (
 }
 
 /**
- * 
+ *
  * @param {Authority address} authority base58
  * @param {Address found with findProgramAddress } userFarmAddr base58
- * @param {Leverage programid } programId 
- * @param {index obligation on USER_FARM} obligationIndex 
- * @returns 
+ * @param {Leverage programid } programId
+ * @param {index obligation on USER_FARM} obligationIndex
+ * @returns
  */
 const findUserFarmObligationAddress = async (
   authority,
@@ -173,11 +174,11 @@ const getDepositedLpTokens = async (_userVaultShares, _vaultAddress) => {
 };
 
 /**
- * 
+ *
  * @param {address of LP mint of vault} _lpMintAddress base58 encoded
  * @param {address of reserves0} _poolCoinTokenaccount base58 encoded
  * @param {address of reserves1} _poolPcTokenaccount base58 encoded
- * @returns 
+ * @returns
  */
 const getPoolStatus = async (_lpMintAddress, _poolCoinTokenaccount, _poolPcTokenaccount) => {
 
@@ -206,7 +207,7 @@ const getPoolStatus = async (_lpMintAddress, _poolCoinTokenaccount, _poolPcToken
 };
 
 /**
- * 
+ *
  * @param {Farm pool index on FARM object} _farmIndex number
  * @param {Array position on USER_FARM} _obligationIndex number
  * @param {Solfarm Program ID} _farmProgramId address
@@ -217,9 +218,10 @@ const getPoolStatus = async (_lpMintAddress, _poolCoinTokenaccount, _poolPcToken
  * @param {Address of LP Mint programm} _lpMintAddress address
  * @param {Address of reserves0 token} _poolCoinTokenAccount address
  * @param {Address of reserves1 token} _poolPcTokenAccount address
+ * @param {Version of RayPool as seen on pool object} number
  * @param {reserve0 usd price} _reserve0Price number
  * @param {reserve1 usd price} _reserve1Price number
- * @returns 
+ * @returns
  */
 const getSolFarmPoolInfo = async (
   _farmIndex,
@@ -232,6 +234,7 @@ const getSolFarmPoolInfo = async (
   _lpMintAddress,
   _poolCoinTokenAccount,
   _poolPcTokenAccount,
+  _poolVersion,
   _reserve0Price,
   _reserve1Price,
 ) => {
@@ -243,15 +246,18 @@ const getSolFarmPoolInfo = async (
      *
      * coin = base
      * pc = quote
-     * 
+     *
      * User LpTokens * token USD value = virtual value
      * borrowed = obligationBorrowX.borrowedAmountWads
      * virtual value - borrowed  = value
-     * 
+     *
      */
 
-    if(_reserve0Price == undefined || _reserve1Price == undefined)
-      throw("Reserve prices needs to be passed as parameters");
+    if (_reserve0Price == undefined || _reserve1Price == undefined)
+      throw ("Reserve prices needs to be passed as parameters");
+
+    if (_poolVersion == undefined)
+      throw ("Need pool version number")
 
     let key = await findUserFarmAddress(
       b58AddressToPubKey(_userAddress),
@@ -281,8 +287,8 @@ const getSolFarmPoolInfo = async (
      * To get Pool information
      * pcBalance = Total reserve0 balances
      * coinBalance = Total reserve1 balances
-     * TotalSupply = total supply of minted lp tokens 
-     * 
+     * TotalSupply = total supply of minted lp tokens
+     *
    */
     let poolPosition = await getPoolStatus(_lpMintAddress, _poolCoinTokenAccount, _poolPcTokenAccount);
 
@@ -293,7 +299,9 @@ const getSolFarmPoolInfo = async (
     /**
      * To get AMM ID and fetch circulating values.
      */
-    let getAMMData = await getVaultData(_ammId, AMM_INFO_LAYOUT_V3);
+    let decodeInstructions = _poolVersion == 3 ? AMM_INFO_LAYOUT_V3 : AMM_INFO_LAYOUT_V4;
+
+    let getAMMData = await getVaultData(_ammId, decodeInstructions);
     let needTakePnlCoin = parseInt(getAMMData.needTakePnlCoin.toString());
     let needTakePnlPc = parseInt(getAMMData.needTakePnlPc.toString());
 
@@ -318,19 +326,19 @@ const getSolFarmPoolInfo = async (
 
     let poolTVL = (r0Bal * _reserve0Price) + (r1Bal * _reserve1Price);
     let unitLpValue = poolTVL / (totalSupply / 10 ** 6);
-    
+
     let virtualValue = (userLpTokens * unitLpValue) / 10 ** 6;
 
     let borrow1 = decoded.obligationBorrowOne.borrowedAmountWads.toString();
     let borrow2 = decoded.obligationBorrowTwo.borrowedAmountWads.toString();
-    
+
     let borrowed;
     let debt;
 
-    if(borrow1 != 0){
+    if (borrow1 != 0) {
       borrowed = borrow1 / 10 ** 18;
       debt = (borrowed / 10 ** 6) * _reserve1Price;
-    }else{
+    } else {
       borrowed = borrow2 / 10 ** 18;
       debt = (borrowed / 10 ** 6) * _reserve0Price;
     };

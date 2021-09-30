@@ -1,4 +1,4 @@
-const { blob } = require("buffer-layout");//FIXME: ver el homólogo de blob en BORSH para no tener que usar 2 libs
+const { blob } = require("buffer-layout");
 const { publicKey, u64, u8, u128, u32, bool, struct } = require("@project-serum/borsh");
 
 const FARMS = {
