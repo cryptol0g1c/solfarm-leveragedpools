@@ -166,47 +166,6 @@ const AMM_INFO_LAYOUT_V4 = struct([
   publicKey('pnlOwner')
 ]);
 
-const AMM_INFO_LAYOUT_V3 = struct([
-  u64('status'),
-  u64('nonce'),
-  u64('orderNum'),
-  u64('depth'),
-  u64('coinDecimals'),
-  u64('pcDecimals'),
-  u64('state'),
-  u64('resetFlag'),
-  u64('fee'),
-  u64('min_separate'),
-  u64('minSize'),
-  u64('volMaxCutRatio'),
-  u64('pnlRatio'),
-  u64('amountWaveRatio'),
-  u64('coinLotSize'),
-  u64('pcLotSize'),
-  u64('minPriceMultiplier'),
-  u64('maxPriceMultiplier'),
-  u64('needTakePnlCoin'),
-  u64('needTakePnlPc'),
-  u64('totalPnlX'),
-  u64('totalPnlY'),
-  u64('systemDecimalsValue'),
-  publicKey('poolCoinTokenAccount'),
-  publicKey('poolPcTokenAccount'),
-  publicKey('coinMintAddress'),
-  publicKey('pcMintAddress'),
-  publicKey('lpMintAddress'),
-  publicKey('ammOpenOrders'),
-  publicKey('serumMarket'),
-  publicKey('serumProgramId'),
-  publicKey('ammTargetOrders'),
-  publicKey('ammQuantities'),
-  publicKey('poolWithdrawQueue'),
-  publicKey('poolTempLpTokenAccount'),
-  publicKey('ammOwner'),
-  publicKey('pnlOwner'),
-  publicKey('srmTokenAccount')
-])
-
 const LENDING_OBLIGATION_LIQUIDITY = struct(
   [
     publicKey('borrowReserve'),

@@ -11,7 +11,6 @@ const {
   VAULT_LAYOUT,
   MINT_LAYOUT,
   LENDING_OBLIGATION_LAYOUT,
-  AMM_INFO_LAYOUT_V3,
   AMM_INFO_LAYOUT_V4
 } = require("./config.js");
 
@@ -218,7 +217,6 @@ const getPoolStatus = async (_lpMintAddress, _poolCoinTokenaccount, _poolPcToken
  * @param {Address of LP Mint programm} _lpMintAddress address
  * @param {Address of reserves0 token} _poolCoinTokenAccount address
  * @param {Address of reserves1 token} _poolPcTokenAccount address
- * @param {Version of RayPool as seen on pool object} number
  * @param {reserve0 usd price} _reserve0Price number
  * @param {reserve1 usd price} _reserve1Price number
  * @returns
@@ -234,7 +232,6 @@ const getSolFarmPoolInfo = async (
   _lpMintAddress,
   _poolCoinTokenAccount,
   _poolPcTokenAccount,
-  _poolVersion,
   _reserve0Price,
   _reserve1Price,
 ) => {
@@ -255,9 +252,6 @@ const getSolFarmPoolInfo = async (
 
     if (_reserve0Price == undefined || _reserve1Price == undefined)
       throw ("Reserve prices needs to be passed as parameters");
-
-    if (_poolVersion == undefined)
-      throw ("Need pool version number")
 
     let key = await findUserFarmAddress(
       b58AddressToPubKey(_userAddress),
@@ -299,9 +293,8 @@ const getSolFarmPoolInfo = async (
     /**
      * To get AMM ID and fetch circulating values.
      */
-    let decodeInstructions = _poolVersion == 3 ? AMM_INFO_LAYOUT_V3 : AMM_INFO_LAYOUT_V4;
 
-    let getAMMData = await getVaultData(_ammId, decodeInstructions);
+    let getAMMData = await getVaultData(_ammId, AMM_INFO_LAYOUT_V4);
     let needTakePnlCoin = parseInt(getAMMData.needTakePnlCoin.toString());
     let needTakePnlPc = parseInt(getAMMData.needTakePnlPc.toString());
 
