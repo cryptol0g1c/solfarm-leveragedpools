@@ -1,5 +1,6 @@
 const { getSolFarmPoolInfo } = require('./leveragePools');
 const { FARMS } = require('./config');
+const BN = require('bn.js');
 
 const main = async () => {
 
@@ -9,8 +10,8 @@ const main = async () => {
      * Example usage of RAY-USDT SolFarm Leverage Pool
      * For vault information check: https://gist.github.com/therealssj/c6049ac59863df454fb3f4ff19b529ee
      */
-    const RESERVE_0_PRICE = 8.97; //RAY USD VALUE
-    const RESERVE_1_PRICE = 1; // USDT USD VALUE
+    const RESERVE_0_PRICE = new BN(10.65); //RAY USD VALUE
+    const RESERVE_1_PRICE = new BN(1); // USDT USD VALUE
 
     let { borrowed, virtualValue, value, debt } = await getSolFarmPoolInfo(
       FARMS.RayUsdtVault, //Farm pool index on FARM object}

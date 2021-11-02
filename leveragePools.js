@@ -163,7 +163,7 @@ const getDepositedLpTokens = async (_userVaultShares, _vaultAddress) => {
   try {
     let { total_vault_balance, total_vlp_shares } = await getVaultData(_vaultAddress, VAULT_LAYOUT);
 
-    let lpTokens = (_userVaultShares.toNumber() * total_vault_balance.toNumber()) / total_vlp_shares.toNumber();
+    let lpTokens = _userVaultShares.mul(total_vault_balance).div(total_vlp_shares);
 
     return lpTokens;
   } catch (error) {
@@ -286,41 +286,49 @@ const getSolFarmPoolInfo = async (
    */
     let poolPosition = await getPoolStatus(_lpMintAddress, _poolCoinTokenAccount, _poolPcTokenAccount);
 
-    let pcBalance = parseInt(poolPosition.pcBalance);
-    let coinBalance = parseInt(poolPosition.coinBalance);
-    let totalSupply = parseInt(poolPosition.totalSupply);
+    let pcBalance = new BN(poolPosition.pcBalance);
+    let coinBalance = new BN(poolPosition.coinBalance);
+    let totalSupply = new BN(poolPosition.totalSupply);
 
     /**
      * To get AMM ID and fetch circulating values.
      */
 
-    let getAMMData = await getVaultData(_ammId, AMM_INFO_LAYOUT_V4);
-    let needTakePnlCoin = parseInt(getAMMData.needTakePnlCoin.toString());
-    let needTakePnlPc = parseInt(getAMMData.needTakePnlPc.toString());
+    let {
+      needTakePnlCoin,
+      needTakePnlPc
+    } = await getVaultData(_ammId, AMM_INFO_LAYOUT_V4);
+
+    //let needTakePnlCoin = parseInt(getAMMData.needTakePnlCoin.toString());
+    //let needTakePnlPc = parseInt(getAMMData.needTakePnlPc.toString());
 
     /**
      * Get and decode AMM Open Order values
      */
     let OPEN_ORDER_INSTRUCTIONS = OpenOrders.getLayout(b58AddressToPubKey(_ammOpenOrders));
-    let openOrdersData = await getVaultData(_ammOpenOrders, OPEN_ORDER_INSTRUCTIONS);
 
-    let baseTokenTotal = parseInt(openOrdersData.baseTokenTotal.toString());
-    let quoteTokenTotal = parseInt(openOrdersData.quoteTokenTotal.toString());
+    let {
+      baseTokenTotal,
+      quoteTokenTotal
+    } = await getVaultData(_ammOpenOrders, OPEN_ORDER_INSTRUCTIONS);
 
-    let r0Bal = (coinBalance +
-      baseTokenTotal -
-      needTakePnlCoin
-    ) / 10 ** 6;
+    let r0Bal =
+      coinBalance
+        .add(baseTokenTotal)
+        .sub(needTakePnlCoin)
+        .divn(10 ** 6);
 
-    let r1Bal = (pcBalance +
-      quoteTokenTotal -
-      needTakePnlPc
-    ) / 10 ** 6;
+    let r1Bal =
+      pcBalance
+        .add(quoteTokenTotal)
+        .sub(needTakePnlPc)
+        .divn(10 ** 6);
 
-    let poolTVL = (r0Bal * _reserve0Price) + (r1Bal * _reserve1Price);
-    let unitLpValue = poolTVL / (totalSupply / 10 ** 6);
+    let poolTVL = r0Bal.mul(_reserve0Price).add(r1Bal.mul(_reserve1Price));
 
-    let virtualValue = (userLpTokens * unitLpValue) / 10 ** 6;
+    let unitLpValue = poolTVL.divn(totalSupply.divn(10 ** 6));
+
+    let virtualValue = userLpTokens.mul(unitLpValue).divn(10 ** 6);
 
     let borrow1 = decoded.obligationBorrowOne.borrowedAmountWads.toString();
     let borrow2 = decoded.obligationBorrowTwo.borrowedAmountWads.toString();
@@ -328,21 +336,21 @@ const getSolFarmPoolInfo = async (
     let borrowed;
     let debt;
 
-    if (borrow1 != 0) {
-      borrowed = borrow1 / 10 ** 18;
-      debt = (borrowed / 10 ** 6) * _reserve1Price;
+    if (!borrow1.isZero()) {
+      borrowed = borrow1.divn(10 ** 18);
+      debt = borrowed.divn(10 ** 6).mul(_reserve1Price);
     } else {
-      borrowed = borrow2 / 10 ** 18;
-      debt = (borrowed / 10 ** 6) * _reserve0Price;
+      borrowed = borrow2.divn(10 ** 18);
+      debt = borrowed.divn(10 ** 6).mul(_reserve0Price);
     };
 
-    let value = virtualValue - debt;
+    let value = virtualValue.sub(debt);
 
     let vaultInfo = {
-      borrowed,
-      debt,
-      virtualValue,
-      value
+      borrowed: borrowed.toNumber(),
+      debt: debt.toNumber(),
+      virtualValue: virtualValue.toNumber(),
+      value: value.toNumber()
     };
 
     return vaultInfo;
