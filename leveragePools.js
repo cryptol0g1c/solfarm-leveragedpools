@@ -1,6 +1,5 @@
 const solanaWeb3 = require('@solana/web3.js');
 const { OpenOrders } = require('@project-serum/serum');
-const axios = require('axios');
 const BN = require('bn.js');
 
 const connection = new solanaWeb3.Connection(
@@ -11,62 +10,15 @@ const {
   VAULT_LAYOUT,
   MINT_LAYOUT,
   LENDING_OBLIGATION_LAYOUT,
-  AMM_INFO_LAYOUT_V4
-} = require("./config.js");
+  AMM_INFO_LAYOUT_V4,
+  USD_UNIT,
+  ETH_UNIT
+} = require("./config");
 
-
-/**
- *
- * @param {Account address to get info from} _address returns information of the account address using Solana RPC
- * @returns
- */
-const getAccountInfo = async (_address) => {
-
-  try {
-    const data = JSON.stringify({
-      "jsonrpc": "2.0",
-      "id": 1,
-      "method": "getAccountInfo",
-      "params": [
-        `${_address}`,
-        {
-          "encoding": "jsonParsed"
-        }
-      ]
-    });
-
-    const config = {
-      method: 'post',
-      url: 'https://solana-api.projectserum.com',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data: data
-    };
-
-    let result = await axios(config);
-    return result.data.result;
-
-  } catch (error) {
-    console.log(error);
-  }
-
-};
-
-/**
- *
- * @param {Address to convert to PubKey} _address Base58
- * @returns PubKey
- */
-const b58AddressToPubKey = (_address) => {
-
-  try {
-    let pubKey = new solanaWeb3.PublicKey(_address);
-    return pubKey;
-  } catch (error) {
-    throw (error);
-  }
-};
+const {
+  getAccountInfo,
+  b58AddressToPubKey,
+} = require('./utils');
 
 /**
  *
@@ -169,9 +121,7 @@ const getDepositedLpTokens = async (_userVaultShares, _vaultAddress) => {
   } catch (error) {
     throw (error);
   }
-
-};
-
+}
 /**
  *
  * @param {address of LP mint of vault} _lpMintAddress base58 encoded
@@ -253,18 +203,20 @@ const getSolFarmPoolInfo = async (
     if (_reserve0Price == undefined || _reserve1Price == undefined)
       throw ("Reserve prices needs to be passed as parameters");
 
+    const FIND_USER_ADDRESS_INDEX = new BN(0);
+
     let key = await findUserFarmAddress(
       b58AddressToPubKey(_userAddress),
       b58AddressToPubKey(_farmProgramId),
-      new BN(0), // hard code to 0 for now
-      new BN(_farmIndex) // index of the farm
+      FIND_USER_ADDRESS_INDEX,
+      new BN(_farmIndex)
     );
 
     let [userObligationAcct1] = await findUserFarmObligationAddress(
       b58AddressToPubKey(_userAddress),
       key[0],
       b58AddressToPubKey(_farmProgramId),
-      new BN(0) // obligation index from the UserFarm obligations list
+      new BN(_obligationIndex)
     );
 
     let accInfo = await getAccountInfo(userObligationAcct1.toBase58());
@@ -299,9 +251,6 @@ const getSolFarmPoolInfo = async (
       needTakePnlPc
     } = await getVaultData(_ammId, AMM_INFO_LAYOUT_V4);
 
-    //let needTakePnlCoin = parseInt(getAMMData.needTakePnlCoin.toString());
-    //let needTakePnlPc = parseInt(getAMMData.needTakePnlPc.toString());
-
     /**
      * Get and decode AMM Open Order values
      */
@@ -316,32 +265,32 @@ const getSolFarmPoolInfo = async (
       coinBalance
         .add(baseTokenTotal)
         .sub(needTakePnlCoin)
-        .divn(10 ** 6);
+        .div(USD_UNIT);
 
     let r1Bal =
       pcBalance
         .add(quoteTokenTotal)
         .sub(needTakePnlPc)
-        .divn(10 ** 6);
+        .div(USD_UNIT);
 
     let poolTVL = r0Bal.mul(_reserve0Price).add(r1Bal.mul(_reserve1Price));
 
-    let unitLpValue = poolTVL.divn(totalSupply.divn(10 ** 6));
+    let unitLpValue = poolTVL.div(totalSupply.div(USD_UNIT));
 
-    let virtualValue = userLpTokens.mul(unitLpValue).divn(10 ** 6);
+    let virtualValue = userLpTokens.mul(unitLpValue).div(USD_UNIT);
 
-    let borrow1 = decoded.obligationBorrowOne.borrowedAmountWads.toString();
-    let borrow2 = decoded.obligationBorrowTwo.borrowedAmountWads.toString();
+    let borrow1 = decoded.obligationBorrowOne.borrowedAmountWads;
+    let borrow2 = decoded.obligationBorrowTwo.borrowedAmountWads;
 
     let borrowed;
     let debt;
 
     if (!borrow1.isZero()) {
-      borrowed = borrow1.divn(10 ** 18);
-      debt = borrowed.divn(10 ** 6).mul(_reserve1Price);
+      borrowed = borrow1.div(ETH_UNIT);
+      debt = borrowed.div(USD_UNIT).mul(_reserve1Price);
     } else {
-      borrowed = borrow2.divn(10 ** 18);
-      debt = borrowed.divn(10 ** 6).mul(_reserve0Price);
+      borrowed = borrow2.div(ETH_UNIT);
+      debt = borrowed.div(USD_UNIT).mul(_reserve0Price);
     };
 
     let value = virtualValue.sub(debt);

@@ -1,5 +1,6 @@
 const { blob } = require("buffer-layout");
 const { publicKey, u64, u8, u128, u32, bool, struct } = require("@project-serum/borsh");
+const BN = require('bn.js');
 
 const FARMS = {
   RayUsdcVault: 0,
@@ -18,8 +19,40 @@ const FARMS = {
   BopRayVault: 13,
   SlrsUsdcVault: 14,
   SamoRayVault: 15,
+  LikeUsdcVault: 16,
+  OrcaUsdcVault: 17,
+  OrcaSolVault: 18,
+  AtlasUsdcVault: 19,
+  AtlasRayVault: 20,
+  PolisUsdcVault: 21,
+  PolisRayVault: 22,
+  EthUsdcOrcaVault: 23,
+  SolUsdcOrcaVault: 24,
+  SolUsdtOrcaVault: 25,
+  EthSolOrcaVault: 26,
+  AtlasUsdcOrcaVault: 27,
+  PolisUsdcOrcaVault: 28,
+  whEthUsdcOrcaVault: 29,
+  whEthSolOrcaVault: 30,
+  mSolUsdcRayVault: 31,
+  mSolUsdtRayVault: 32,
+  EthMSolRayVault: 33,
+  BtcMSolRayVault: 34,
+  mSolRayRayVault: 35,
+  SamoRayRayVault: 36,
+  SamoUsdcOrcaVault: 37,
+  SrmUsdcRayVault: 38,
+  whEthUsdcRayVault: 39,
+  whEthSolRayVault: 40,
+  weSushiUsdcRayVault: 41,
+  weUniUsdcRayVault: 42,
+  StarsUsdcRayVault: 43,
+  weDydxUsdcRayVault: 44,
+  GeneUsdcRayVault: 45,
+  GeneRayRayVault: 46,
   Unknown: 255,
 };
+
 
 const VAULT_LAYOUT = struct([
   blob(8),
@@ -227,6 +260,22 @@ const USER_FARM = struct([
   )
 ]);
 
+const ORCA_VAULT_LAYOUT = struct([
+  blob(8),
+  publicKey("authority"),
+  publicKey("pda"),
+  u8("pda_nonce"),
+  u8("account_nonce"),
+  publicKey("compound_authority"),
+  publicKey("user_farm_addr"),
+  u8("user_farm_nonce"),
+  u64("total_vault_balance"),
+  u64("total_vlp_shares")
+]);
+
+const USD_UNIT = new BN((10 ** 6).toString());
+const ETH_UNIT = new BN((10 ** 18).toString());
+
 module.exports = {
   filters,
   FARMS,
@@ -237,10 +286,13 @@ module.exports = {
   ACCOUNT_LAYOUT,
   MINT_LAYOUT,
   AMM_INFO_LAYOUT_V4,
+  ORCA_VAULT_LAYOUT,
   LENDING_OBLIGATION_LIQUIDITY,
   LENDING_OBLIGATION_LAYOUT,
   OBLIGATION_LAYOUT,
   USER_FARM,
+  USD_UNIT,
+  ETH_UNIT,
 };
 
 
