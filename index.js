@@ -17,7 +17,7 @@ const main = async () => {
 
     const RESERVE_0_PRICE = new BN(RAY_USD); //RAY USD VALUE
     const RESERVE_1_PRICE = new BN(USDC); // USDT USD VALUE
-    
+
     /**
      * Example usage of RAY-USDT SolFarm Leverage Pool
      * For vault information check: https://gist.github.com/therealssj/c6049ac59863df454fb3f4ff19b529ee
@@ -28,6 +28,7 @@ const main = async () => {
       FARMS.RayUsdtVault, // Farm pool index on FARM object
       0, //Array position on USER_FARM | This can be 0, 1 or 2; set value accordingly
       SOLFARM_PROGRAM_ID,
+      0, // RAYDIUM:0 or ORCA:1 vaults
       "1ZpdBUTiDLTUe3izSdYfRXSf93fpJPmoKtA5bFjGesS",//Pool Vault address | https://gist.github.com/therealssj/c6049ac59863df454fb3f4ff19b529ee#file-solfarm_ray_vault-json-L816
       "BN2vN85Q4HiWJL6JejX2ke82fKY7nxnFUBjAWFMC8Wcb",//Address of user to check balances
       "DVa7Qmb5ct9RCpaU7UTpSaf3GVMYz17vNVU67XpdCRut",//AMM program id | https://gist.github.com/therealssj/c6049ac59863df454fb3f4ff19b529ee#file-solfarm_ray_vault-json-L220

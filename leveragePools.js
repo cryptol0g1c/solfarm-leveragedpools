@@ -8,6 +8,7 @@ const connection = new solanaWeb3.Connection(
 
 const {
   VAULT_LAYOUT,
+  ORCA_VAULT_LAYOUT,
   MINT_LAYOUT,
   LENDING_OBLIGATION_LAYOUT,
   AMM_INFO_LAYOUT_V4,
@@ -110,15 +111,19 @@ const getVaultData = async (_vaultAddress, _INSTRUCTIONS) => {
  * @param {Pool Account as seen here: https://gist.github.com/therealssj/c6049ac59863df454fb3f4ff19b529ee} _vaultAddress address
  * @returns
  */
-const getDepositedLpTokens = async (_userVaultShares, _vaultAddress) => {
+const getDepositedLpTokens = async (_poolVault, _userVaultShares, _vaultAddress) => {
 
   try {
-    let { total_vault_balance, total_vlp_shares } = await getVaultData(_vaultAddress, VAULT_LAYOUT);
+
+    let layout = _poolVault == 0 ? VAULT_LAYOUT : ORCA_VAULT_LAYOUT;
+
+    let { total_vault_balance, total_vlp_shares } = await getVaultData(_vaultAddress, layout);
 
     let lpTokens = _userVaultShares.mul(total_vault_balance).div(total_vlp_shares);
 
     return lpTokens;
   } catch (error) {
+    console.log(error);
     throw (error);
   }
 }
@@ -160,6 +165,7 @@ const getPoolStatus = async (_lpMintAddress, _poolCoinTokenaccount, _poolPcToken
  * @param {Farm pool index on FARM object} _farmIndex number
  * @param {Array position on USER_FARM} _obligationIndex number
  * @param {Solfarm Program ID} _farmProgramId address
+ * @param {Pool vault Ray:0 | Orca:1 } _poolVault number
  * @param {Pool Vault address} _vaultAddress address
  * @param {Address of user to check balances} _userAddress address
  * @param {AMM program id} _ammId address
@@ -175,6 +181,7 @@ const getSolFarmPoolInfo = async (
   _farmIndex,
   _obligationIndex,
   _farmProgramId,
+  _poolVault,
   _vaultAddress,
   _userAddress,
   _ammId,
@@ -227,7 +234,7 @@ const getSolFarmPoolInfo = async (
 
     let decoded = LENDING_OBLIGATION_LAYOUT.decode(dataBuffer);
 
-    let userLpTokens = await getDepositedLpTokens(decoded.vaultShares, _vaultAddress);
+    let userLpTokens = await getDepositedLpTokens(_poolVault, decoded.vaultShares, _vaultAddress);
 
     /**
      * To get Pool information
@@ -242,36 +249,55 @@ const getSolFarmPoolInfo = async (
     let coinBalance = new BN(poolPosition.coinBalance);
     let totalSupply = new BN(poolPosition.totalSupply);
 
-    /**
-     * To get AMM ID and fetch circulating values.
-     */
-
-    let {
-      needTakePnlCoin,
-      needTakePnlPc
-    } = await getVaultData(_ammId, AMM_INFO_LAYOUT_V4);
+    let r0Bal;
+    let r1Bal;
 
     /**
-     * Get and decode AMM Open Order values
+     * If we calculate Raydium vaults, we also get AMM circulating supply;
      */
-    let OPEN_ORDER_INSTRUCTIONS = OpenOrders.getLayout(b58AddressToPubKey(_ammOpenOrders));
+    if (_poolVault == 0) {
 
-    let {
-      baseTokenTotal,
-      quoteTokenTotal
-    } = await getVaultData(_ammOpenOrders, OPEN_ORDER_INSTRUCTIONS);
+      /**
+       * To get AMM ID and fetch circulating values.
+       */
+      let {
+        needTakePnlCoin,
+        needTakePnlPc
+      } = await getVaultData(_ammId, AMM_INFO_LAYOUT_V4);
 
-    let r0Bal =
-      coinBalance
-        .add(baseTokenTotal)
-        .sub(needTakePnlCoin)
-        .div(USD_UNIT);
+      /**
+       * Get and decode AMM Open Order values
+       */
+      let OPEN_ORDER_INSTRUCTIONS = OpenOrders.getLayout(b58AddressToPubKey(_ammOpenOrders));
 
-    let r1Bal =
-      pcBalance
-        .add(quoteTokenTotal)
-        .sub(needTakePnlPc)
-        .div(USD_UNIT);
+      let {
+        baseTokenTotal,
+        quoteTokenTotal
+      } = await getVaultData(_ammOpenOrders, OPEN_ORDER_INSTRUCTIONS);
+
+      r0Bal =
+        coinBalance
+          .add(baseTokenTotal)
+          .sub(needTakePnlCoin)
+          .div(USD_UNIT);
+
+      r1Bal =
+        pcBalance
+          .add(quoteTokenTotal)
+          .sub(needTakePnlPc)
+          .div(USD_UNIT);
+
+    } else {
+
+      r0Bal =
+        coinBalance
+          .div(USD_UNIT);
+
+      r1Bal =
+        pcBalance
+          .div(USD_UNIT);
+    }
+
 
     let poolTVL = r0Bal.mul(_reserve0Price).add(r1Bal.mul(_reserve1Price));
 
