@@ -1,9 +1,20 @@
+const BN = require('bignumber.js');
 const { getSolFarmPoolInfo } = require('./leveragePools');
-const { FARMS } = require('./config');
-const BN = require('bn.js');
+
+const {
+  FARMS,
+  SOLFARM_PROGRAM_ID
+} = require('./config');
+
 const { getCoinsUsdValue } = require('./utils');
 
 const main = async () => {
+
+  await OrcaVaultExample();
+  //await RayVaultExample();
+};
+
+const RayVaultExample = async () => {
 
   try {
 
@@ -22,7 +33,6 @@ const main = async () => {
      * Example usage of RAY-USDT SolFarm Leverage Pool
      * For vault information check: https://gist.github.com/therealssj/c6049ac59863df454fb3f4ff19b529ee
      */
-   const SOLFARM_PROGRAM_ID = "Bt2WPMmbwHPk36i4CRucNDyLcmoGdC7xEdrVuxgJaNE6"; //Solfarm Program ID
 
     let { borrowed, virtualValue, value, debt } = await getSolFarmPoolInfo(
       FARMS.RayUsdtVault, // Farm pool index on FARM object
@@ -41,7 +51,6 @@ const main = async () => {
     );
 
     console.log("Borrowed:", borrowed);
-    console.log("Debt:", debt);
     console.log("VirtualValue:", virtualValue);
     console.log("Value:", value);
 
@@ -51,7 +60,57 @@ const main = async () => {
 
   } catch (error) {
     console.log(error);
-    throw (error);
+  };
+
+};
+
+
+const OrcaVaultExample = async () => {
+
+
+  try {
+
+    /**
+     * This fetches token values directly from Coingecko API
+     * Check it's doc for proper string ID
+     * TODO: Better to send all ids in a single query.
+     */
+    const SOL_USD = await getCoinsUsdValue("solana");
+    const USDC = await getCoinsUsdValue("usd-coin");
+
+    const RESERVE_0_PRICE = new BN(SOL_USD); //RAY USD VALUE
+    const RESERVE_1_PRICE = new BN(USDC); // USDT USD VALUE
+
+    /**
+     * Example usage of ORCA SOL-USDC SolFarm Leverage Pool
+     * For vault information check: https://gist.github.com/therealssj/c42df1c34c3a385c07fddda6df47d248#file-solfarm_orca_vaults-json-L109
+     */
+    let { borrowed, virtualValue, value, debt } = await getSolFarmPoolInfo(
+      FARMS.SolUsdcOrcaVault,                         // Farm pool index on FARM object
+      0,                                              // This can be 0, 1 or 2; set value accordingly
+      SOLFARM_PROGRAM_ID,                             // SOLFARM Program ID (DO NOT MODIFY)
+      1,                                              // RAYDIUM:0 or ORCA:1 vaults
+      "5Qk3dT58AmbGvgADpauiUaUccb4EPSUxvJaVHcUzVUT3", // Pool "account"
+      "BN2vN85Q4HiWJL6JejX2ke82fKY7nxnFUBjAWFMC8Wcb", // Address of user to check balances
+      "EGZ7tiLeH62TPV1gL8WwbXGzEPa9zmcpVnnkPKKnrE2U", // AMM program id
+      "11111111111111111111111111111111",             // Open orders program id
+      "APDFRM3HMr8CAGXwKHiu2f5ePSpaiEJhaURwhsRrUUt9", // lpMintAddress
+      "ANP74VNsHwSrq9uUSjiSNyNWvf6ZPrKTmE4gHoNd13Lg", // Address of reserves0 token (poolCoinTokenaccount)
+      "75HgnSvXbWKZBpZHveX68ZzAhDqMzNDS29X6BGLtxMo1", // Address of reserves1 token
+      RESERVE_0_PRICE,
+      RESERVE_1_PRICE
+    );
+
+    console.log("Borrowed:", borrowed);
+    console.log("VirtualValue:", virtualValue);
+    console.log("Value:", value);
+
+    return {
+      borrowed, virtualValue, value
+    };
+
+  } catch (error) {
+    console.log(error);
   };
 
 };

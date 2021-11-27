@@ -1,7 +1,6 @@
 
 const solanaWeb3 = require('@solana/web3.js');
 const axios = require('axios');
-const BN = require('bn.js');
 
 /**
  * Gets USD value of given token from Coingecko
@@ -23,7 +22,6 @@ const getCoinsUsdValue = async (_tokenId) => {
     };
 
     let result = await axios(config);
-
     return result.data[_tokenId].usd;
 
   } catch (error) {

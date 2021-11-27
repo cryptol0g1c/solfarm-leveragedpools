@@ -1,6 +1,6 @@
 const solanaWeb3 = require('@solana/web3.js');
 const { OpenOrders } = require('@project-serum/serum');
-const BN = require('bn.js');
+const BN = require('bignumber.js');
 
 const connection = new solanaWeb3.Connection(
   "https://solana-api.projectserum.com"
@@ -32,15 +32,23 @@ const {
 const findUserFarmAddress = async (
   authority,
   programId,
-  index, // hardcoded to 0 for now
-  farm,//check FARMS IDs
+  index,
+  farm,
 ) => {
+
+  /**
+   * Create buffer arrays for index (always 0)
+   * and _farm first byte with proper IDs, then fill with 0s
+   */
+  const _index = Buffer.alloc(8, index.toNumber());
+  let _farm = Buffer.alloc(8);
+  _farm[0] = farm;
 
   try {
     let seeds = [
       authority.toBuffer(),
-      index.toArrayLike(Buffer, "le", 8),
-      farm.toArrayLike(Buffer, "le", 8),
+      _index,
+      _farm
     ];
 
     let k = await solanaWeb3.PublicKey.findProgramAddress(seeds, programId);
@@ -67,10 +75,14 @@ const findUserFarmObligationAddress = async (
   obligationIndex
 ) => {
   try {
-    let seeds = [
+
+    let _obligationIndex = Buffer.alloc(8);
+    _obligationIndex[0] = obligationIndex;
+
+    const seeds = [
       authority.toBuffer(),
       userFarmAddr.toBuffer(),
-      obligationIndex.toArrayLike(Buffer, "le", 8),
+      _obligationIndex
     ];
 
     return solanaWeb3.PublicKey.findProgramAddress(seeds, programId);
@@ -107,6 +119,7 @@ const getVaultData = async (_vaultAddress, _INSTRUCTIONS) => {
 
 /**
  * This returns the LP amount of the user converting VaultShares to LP tokens.
+ * @param {Pool 0 (Raydium) | 1 (Orca)} _poolVault Number
  * @param {vaultShares fetched with LENDING_OBLIGATION_LAYOUT.decode} _userVaultShares
  * @param {Pool Account as seen here: https://gist.github.com/therealssj/c6049ac59863df454fb3f4ff19b529ee} _vaultAddress address
  * @returns
@@ -117,13 +130,16 @@ const getDepositedLpTokens = async (_poolVault, _userVaultShares, _vaultAddress)
 
     let layout = _poolVault == 0 ? VAULT_LAYOUT : ORCA_VAULT_LAYOUT;
 
-    let { total_vault_balance, total_vlp_shares } = await getVaultData(_vaultAddress, layout);
+    let {
+      total_vault_balance,
+      total_vlp_shares
+    } = await getVaultData(_vaultAddress, layout);
 
-    let lpTokens = _userVaultShares.mul(total_vault_balance).div(total_vlp_shares);
+    let lpTokens = _userVaultShares.multipliedBy(total_vault_balance).div(total_vlp_shares);
 
     return lpTokens;
   } catch (error) {
-    console.log(error);
+    console.log(`Error getting depositedLpTokens: ${error}`);
     throw (error);
   }
 }
@@ -137,22 +153,31 @@ const getDepositedLpTokens = async (_poolVault, _userVaultShares, _vaultAddress)
 const getPoolStatus = async (_lpMintAddress, _poolCoinTokenaccount, _poolPcTokenaccount) => {
 
   try {
+
     let result;
     result = await connection.getAccountInfo(b58AddressToPubKey(_lpMintAddress));
 
     let mintData = MINT_LAYOUT.decode(Buffer.from(result.data, "base64"));
 
-    let lpTotalSupply = mintData.supply.toString();
+    const totalSupply = new BN(mintData.supply);
+    const supplyDecimals = mintData.decimals;
+
     result = await connection.getTokenAccountBalance(b58AddressToPubKey(_poolCoinTokenaccount));
-    let RayBalance = result.value.amount;
+
+    const coinBalance = new BN(result.value.amount);
+    const coinDecimals = new BN(10 ** result.value.decimals);
 
     result = await connection.getTokenAccountBalance(b58AddressToPubKey(_poolPcTokenaccount));
-    let UsdtBalance = result.value.amount;
+    const pcBalance = new BN(result.value.amount);
+    const pcDecimals = new BN(10 ** result.value.decimals);
 
     return {
-      totalSupply: lpTotalSupply,
-      coinBalance: RayBalance,
-      pcBalance: UsdtBalance
+      totalSupply,
+      supplyDecimals,
+      coinBalance,
+      coinDecimals,
+      pcBalance,
+      pcDecimals
     };
 
   } catch (error) {
@@ -210,12 +235,12 @@ const getSolFarmPoolInfo = async (
     if (_reserve0Price == undefined || _reserve1Price == undefined)
       throw ("Reserve prices needs to be passed as parameters");
 
-    const FIND_USER_ADDRESS_INDEX = new BN(0);
+    const FARM_USER_ADDRESS_INDEX = new BN(0);
 
     let key = await findUserFarmAddress(
       b58AddressToPubKey(_userAddress),
       b58AddressToPubKey(_farmProgramId),
-      FIND_USER_ADDRESS_INDEX,
+      FARM_USER_ADDRESS_INDEX,
       new BN(_farmIndex)
     );
 
@@ -226,15 +251,21 @@ const getSolFarmPoolInfo = async (
       new BN(_obligationIndex)
     );
 
-    let accInfo = await getAccountInfo(userObligationAcct1.toBase58());
+    let accountInfo = await getAccountInfo(userObligationAcct1.toBase58());
 
-    let buf = accInfo.value.data[0];
+    if (accountInfo.value == null)
+      throw ("No data on user account, check FARM array position (2nd param on getSolFarmPoolInfo())");
 
-    const dataBuffer = Buffer.from(buf, "base64");
+    const rawBuffer = accountInfo.value.data[0];
 
-    let decoded = LENDING_OBLIGATION_LAYOUT.decode(dataBuffer);
+    const dataBuffer = Buffer.from(rawBuffer, "base64");
 
-    let userLpTokens = await getDepositedLpTokens(_poolVault, decoded.vaultShares, _vaultAddress);
+    const decoded = LENDING_OBLIGATION_LAYOUT.decode(dataBuffer);
+
+    const vaultShares = new BN(decoded.vaultShares.toString());
+
+    const userLpTokens =
+      await getDepositedLpTokens(_poolVault, vaultShares, _vaultAddress);
 
     /**
      * To get Pool information
@@ -243,11 +274,14 @@ const getSolFarmPoolInfo = async (
      * TotalSupply = total supply of minted lp tokens
      *
    */
-    let poolPosition = await getPoolStatus(_lpMintAddress, _poolCoinTokenAccount, _poolPcTokenAccount);
-
-    let pcBalance = new BN(poolPosition.pcBalance);
-    let coinBalance = new BN(poolPosition.coinBalance);
-    let totalSupply = new BN(poolPosition.totalSupply);
+    let {
+      pcBalance,
+      pcDecimals,
+      coinBalance,
+      coinDecimals,
+      totalSupply,
+      supplyDecimals
+    } = await getPoolStatus(_lpMintAddress, _poolCoinTokenAccount, _poolPcTokenAccount);
 
     let r0Bal;
     let r1Bal;
@@ -277,55 +311,70 @@ const getSolFarmPoolInfo = async (
 
       r0Bal =
         coinBalance
-          .add(baseTokenTotal)
-          .sub(needTakePnlCoin)
-          .div(USD_UNIT);
+          .plus(baseTokenTotal)
+          .minus(needTakePnlCoin)
 
       r1Bal =
         pcBalance
-          .add(quoteTokenTotal)
-          .sub(needTakePnlPc)
-          .div(USD_UNIT);
+          .plus(quoteTokenTotal)
+          .minus(needTakePnlPc)
 
     } else {
 
       r0Bal =
         coinBalance
-          .div(USD_UNIT);
+          .div(coinDecimals);
 
       r1Bal =
         pcBalance
-          .div(USD_UNIT);
+          .div(pcDecimals);
+
     }
 
+    /*
+     * User LpTokens * token USD value = virtual value
+     * borrowed = obligationBorrowX.borrowedAmountWads
+     * virtual value - borrowed  = value
+     *
+     * borrow1 = coin
+     * borrow2 = pc
+    */
 
-    let poolTVL = r0Bal.mul(_reserve0Price).add(r1Bal.mul(_reserve1Price));
+    const poolTVL = r0Bal
+      .multipliedBy(_reserve0Price)
+      .plus(r1Bal.multipliedBy(_reserve1Price));
 
-    let unitLpValue = poolTVL.div(totalSupply.div(USD_UNIT));
+    const _supplyDecimals = new BN(10 ** supplyDecimals);
 
-    let virtualValue = userLpTokens.mul(unitLpValue).div(USD_UNIT);
+    const unitLpValue = poolTVL.div(totalSupply.div(_supplyDecimals));
 
-    let borrow1 = decoded.obligationBorrowOne.borrowedAmountWads;
-    let borrow2 = decoded.obligationBorrowTwo.borrowedAmountWads;
+    const virtualValue = userLpTokens
+      .multipliedBy(unitLpValue)
+      .div(USD_UNIT);
+
+    let borrow1 = new BN(decoded.obligationBorrowOne.borrowedAmountWads.toString());
+    let borrow2 = new BN(decoded.obligationBorrowTwo.borrowedAmountWads.toString());
+
+    const borrow1Decimals = new BN(10 ** decoded.coinDecimals);
+    const borrow2Decimals = new BN(10 ** decoded.pcDecimals);
 
     let borrowed;
-    let debt;
 
-    if (!borrow1.isZero()) {
-      borrowed = borrow1.div(ETH_UNIT);
-      debt = borrowed.div(USD_UNIT).mul(_reserve1Price);
-    } else {
-      borrowed = borrow2.div(ETH_UNIT);
-      debt = borrowed.div(USD_UNIT).mul(_reserve0Price);
-    };
+    if (!borrow1.isZero()){
+      borrowed = borrow1.div(ETH_UNIT).div(borrow1Decimals);
+    }else{
+      borrowed = borrow2.div(ETH_UNIT).div(borrow2Decimals);
+    }
 
-    let value = virtualValue.sub(debt);
+    const borrowValue = borrowed.multipliedBy(_reserve0Price);
+
+    let value = virtualValue
+      .minus(borrowValue);
 
     let vaultInfo = {
       borrowed: borrowed.toNumber(),
-      debt: debt.toNumber(),
-      virtualValue: virtualValue.toNumber(),
-      value: value.toNumber()
+      value: value.toNumber(),
+      virtualValue: virtualValue.toNumber()
     };
 
     return vaultInfo;

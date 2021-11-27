@@ -1,6 +1,8 @@
+const BN = require('bignumber.js');
 const { blob } = require("buffer-layout");
 const { publicKey, u64, u8, u128, u32, bool, struct } = require("@project-serum/borsh");
-const BN = require('bn.js');
+
+const SOLFARM_PROGRAM_ID = "Bt2WPMmbwHPk36i4CRucNDyLcmoGdC7xEdrVuxgJaNE6";
 
 const FARMS = {
   RayUsdcVault: 0,
@@ -52,7 +54,6 @@ const FARMS = {
   GeneRayRayVault: 46,
   Unknown: 255,
 };
-
 
 const VAULT_LAYOUT = struct([
   blob(8),
@@ -279,6 +280,7 @@ const ETH_UNIT = new BN((10 ** 18).toString());
 module.exports = {
   filters,
   FARMS,
+  SOLFARM_PROGRAM_ID,
   VAULT_LAYOUT,
   USER_BALANCE_LAYOUT,
   STAKE_INFO_LAYOUT_V4,
