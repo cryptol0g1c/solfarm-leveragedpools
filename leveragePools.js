@@ -107,7 +107,7 @@ const getVaultData = async (_vaultAddress, _INSTRUCTIONS) => {
 
     const { data } = await connection.getAccountInfo(vaultAddress);
 
-    let vaultData = _INSTRUCTIONS.decode(Buffer.from(data, "base64"));
+    const vaultData = _INSTRUCTIONS.decode(Buffer.from(data, "base64"));
 
     return vaultData;
 
@@ -135,7 +135,7 @@ const getDepositedLpTokens = async (_poolVault, _userVaultShares, _vaultAddress)
       total_vlp_shares
     } = await getVaultData(_vaultAddress, layout);
 
-    let lpTokens = _userVaultShares.multipliedBy(total_vault_balance).div(total_vlp_shares);
+    const lpTokens = _userVaultShares.multipliedBy(total_vault_balance).div(total_vlp_shares);
 
     return lpTokens;
   } catch (error) {
@@ -221,7 +221,6 @@ const getSolFarmPoolInfo = async (
   try {
     /**
      * Information:
-     * Vault data: https://gist.github.com/therealssj/c6049ac59863df454fb3f4ff19b529ee
      *
      * coin = base
      * pc = quote
@@ -235,6 +234,9 @@ const getSolFarmPoolInfo = async (
     if (_reserve0Price == undefined || _reserve1Price == undefined)
       throw ("Reserve prices needs to be passed as parameters");
 
+    /**
+     * As per protocol, FARM_USER_ADDRESS_INDEX is always 0;
+     */  
     const FARM_USER_ADDRESS_INDEX = new BN(0);
 
     let key = await findUserFarmAddress(
@@ -331,15 +333,9 @@ const getSolFarmPoolInfo = async (
 
     }
 
-    /*
-     * User LpTokens * token USD value = virtual value
-     * borrowed = obligationBorrowX.borrowedAmountWads
-     * virtual value - borrowed  = value
-     *
-     * borrow1 = coin
-     * borrow2 = pc
-    */
-
+    /**
+     * Pool TVL calculations based on reserves and reserves prices.
+     */
     const poolTVL = r0Bal
       .multipliedBy(_reserve0Price)
       .plus(r1Bal.multipliedBy(_reserve1Price));
@@ -371,6 +367,9 @@ const getSolFarmPoolInfo = async (
     let value = virtualValue
       .minus(borrowValue);
 
+    /**
+     * If you want to format yourself, uncomment .toNumber() to get the bignumber struct.
+     */
     let vaultInfo = {
       borrowed: borrowed.toNumber(),
       value: value.toNumber(),
