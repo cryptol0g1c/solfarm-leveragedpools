@@ -86,7 +86,7 @@ const OrcaVaultExample = async () => {
     const SOL_USD = await getCoinsUsdValue("solana");
     const USDC = await getCoinsUsdValue("usd-coin");
 
-    const RESERVE_0_PRICE = new BN(SOL_USD); //RAY USD VALUE
+    const RESERVE_0_PRICE = new BN(SOL_USD); //SOL USD VALUE
     const RESERVE_1_PRICE = new BN(USDC); // USDT USD VALUE
 
     /**
