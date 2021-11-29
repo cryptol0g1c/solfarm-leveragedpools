@@ -1,6 +1,7 @@
 
 const solanaWeb3 = require('@solana/web3.js');
 const axios = require('axios');
+const BN = require('bignumber.js');
 
 /**
  * Gets USD value of given token from Coingecko
@@ -31,6 +32,25 @@ const getCoinsUsdValue = async (_tokenId) => {
 
 };
 
+/**
+ * 
+ * @param {big number to format to} _bn 
+ * @returns formatted bignumber for USD fiat rep.
+ */
+const bnToFiatUsd = (_bn) => {
+
+  try {
+
+    if(!BN.isBigNumber(_bn))
+      throw("Not big Number");
+
+    return _bn.dp(2).toNumber();
+  } catch (error) {
+    console.log(`Error formatting BN to USD: ${error}`);
+    throw (error);
+  }
+
+};
 
 /**
  *
@@ -89,4 +109,5 @@ module.exports = {
   getCoinsUsdValue,
   getAccountInfo,
   b58AddressToPubKey,
+  bnToFiatUsd,
 };

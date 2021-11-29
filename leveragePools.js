@@ -19,6 +19,7 @@ const {
 const {
   getAccountInfo,
   b58AddressToPubKey,
+  bnToFiatUsd,
 } = require('./utils');
 
 /**
@@ -236,7 +237,7 @@ const getSolFarmPoolInfo = async (
 
     /**
      * As per protocol, FARM_USER_ADDRESS_INDEX is always 0;
-     */  
+     */
     const FARM_USER_ADDRESS_INDEX = new BN(0);
 
     let key = await findUserFarmAddress(
@@ -346,34 +347,39 @@ const getSolFarmPoolInfo = async (
 
     const virtualValue = userLpTokens
       .multipliedBy(unitLpValue)
+      .div(USD_UNIT)
       .div(USD_UNIT);
 
     let borrow1 = new BN(decoded.obligationBorrowOne.borrowedAmountWads.toString());
     let borrow2 = new BN(decoded.obligationBorrowTwo.borrowedAmountWads.toString());
 
+    //console.log(decoded);
+    //console.log(decoded.obligationBorrowOne.borrowReserve.toBase58())
+    
     const borrow1Decimals = new BN(10 ** decoded.coinDecimals);
     const borrow2Decimals = new BN(10 ** decoded.pcDecimals);
 
     let borrowed;
+    let borrowValue;
 
-    if (!borrow1.isZero()){
+    if (!borrow1.isZero()) {
       borrowed = borrow1.div(ETH_UNIT).div(borrow1Decimals);
-    }else{
+      borrowValue = borrowed.multipliedBy(_reserve1Price);
+    } else {
       borrowed = borrow2.div(ETH_UNIT).div(borrow2Decimals);
+      borrowValue = borrowed.multipliedBy(_reserve0Price);
     }
 
-    const borrowValue = borrowed.multipliedBy(_reserve0Price);
-
-    let value = virtualValue
-      .minus(borrowValue);
+    const value = virtualValue.minus(borrowValue);
 
     /**
      * If you want to format yourself, uncomment .toNumber() to get the bignumber struct.
      */
     let vaultInfo = {
-      borrowed: borrowed.toNumber(),
-      value: value.toNumber(),
-      virtualValue: virtualValue.toNumber()
+      
+      borrowed: bnToFiatUsd(borrowed),
+      virtualValue: bnToFiatUsd(virtualValue),
+      value: bnToFiatUsd(value),
     };
 
     return vaultInfo;

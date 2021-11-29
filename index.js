@@ -19,7 +19,7 @@ const main = async () => {
   //await OrcaVaultExample();
   
   // RAYDIUM RAY_USDT EXAMPLE
-  //await RayVaultExample();
+  await RayVaultExample();
 
 };
 
@@ -49,7 +49,7 @@ const RayVaultExample = async () => {
       SOLFARM_PROGRAM_ID,                             // SOLFARM Program ID (DO NOT MODIFY)
       0,                                              // RAYDIUM:0 or ORCA:1 vaults
       "1ZpdBUTiDLTUe3izSdYfRXSf93fpJPmoKtA5bFjGesS",  // Pool "account"
-      "BN2vN85Q4HiWJL6JejX2ke82fKY7nxnFUBjAWFMC8Wcb", // Address of user to check balances
+      "CN8k9NFPZgGdk5QrXXMN1KSD5asWfMwyYHtjMMPTyLSF", // Address of user to check balances
       "DVa7Qmb5ct9RCpaU7UTpSaf3GVMYz17vNVU67XpdCRut", // AMM program id
       "7UF3m8hDGZ6bNnHzaT2YHrhp7A7n9qFfBj6QEpHPv5S8", // Open orders program id
       "C3sT1R3nsw4AVdepvLTLKr5Gvszr7jufyBWUCvy4TUvT", // lpMintAddress
@@ -60,8 +60,8 @@ const RayVaultExample = async () => {
     );
 
     console.log("Borrowed:", borrowed);
-    console.log("Value:", value);
     console.log("VirtualValue:", virtualValue);
+    console.log("Value:", value);
 
     return {
       borrowed, virtualValue, value
@@ -110,8 +110,8 @@ const OrcaVaultExample = async () => {
     );
 
     console.log("Borrowed:", borrowed);
-    console.log("Value:", value);
     console.log("VirtualValue:", virtualValue);
+    console.log("Value:", value);
 
     return {
       borrowed, virtualValue, value
