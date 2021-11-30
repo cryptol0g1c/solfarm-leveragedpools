@@ -20,6 +20,8 @@ const {
   getAccountInfo,
   b58AddressToPubKey,
   bnToFiatUsd,
+  getCoinsUsdValue,
+  findReserveToken,
 } = require('./utils');
 
 /**
@@ -335,8 +337,8 @@ const getSolFarmPoolInfo = async (
     }
 
     /**
-     * Pool TVL calculations based on reserves and reserves prices.
-     */
+    * Pool TVL calculations based on reserves and reserves prices.
+    */
     const poolTVL = r0Bal
       .multipliedBy(_reserve0Price)
       .plus(r1Bal.multipliedBy(_reserve1Price));
@@ -353,9 +355,11 @@ const getSolFarmPoolInfo = async (
     let borrow1 = new BN(decoded.obligationBorrowOne.borrowedAmountWads.toString());
     let borrow2 = new BN(decoded.obligationBorrowTwo.borrowedAmountWads.toString());
 
-    //console.log(decoded);
-    //console.log(decoded.obligationBorrowOne.borrowReserve.toBase58())
-    
+    /*
+    let reserveData = findReserveToken(decoded.obligationBorrowOne.borrowReserve.toBase58());
+    console.log(`${reserveData.name} value:`, await getCoinsUsdValue(reserveData.token_id));
+    */
+   
     const borrow1Decimals = new BN(10 ** decoded.coinDecimals);
     const borrow2Decimals = new BN(10 ** decoded.pcDecimals);
 

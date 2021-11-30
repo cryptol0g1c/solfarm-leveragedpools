@@ -2,6 +2,35 @@
 const solanaWeb3 = require('@solana/web3.js');
 const axios = require('axios');
 const BN = require('bignumber.js');
+const _ = require('lodash');
+
+const {
+  LENDING_RESERVES
+} = require('./config');
+
+/**
+ * Given Reserve account we fetch token.
+ * @param {reserve account} _account base58() address
+ * @returns reserve structure.
+ */
+const findReserveToken = (_account) => {
+
+  try {
+    if(_account == undefined | _account == null)
+      throw("Missing 'account' parameter");
+
+    const reserve = _.find(LENDING_RESERVES, {
+      account: _account
+    });
+
+    return reserve;
+  } catch (error) {
+    throw(error);
+  }
+  
+};
+
+
 
 /**
  * Gets USD value of given token from Coingecko
@@ -110,4 +139,5 @@ module.exports = {
   getAccountInfo,
   b58AddressToPubKey,
   bnToFiatUsd,
+  findReserveToken,
 };

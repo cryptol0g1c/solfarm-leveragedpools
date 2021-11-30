@@ -49,14 +49,14 @@ const RayVaultExample = async () => {
       SOLFARM_PROGRAM_ID,                             // SOLFARM Program ID (DO NOT MODIFY)
       0,                                              // RAYDIUM:0 or ORCA:1 vaults
       "1ZpdBUTiDLTUe3izSdYfRXSf93fpJPmoKtA5bFjGesS",  // Pool "account"
-      "CN8k9NFPZgGdk5QrXXMN1KSD5asWfMwyYHtjMMPTyLSF", // Address of user to check balances
+      "BN2vN85Q4HiWJL6JejX2ke82fKY7nxnFUBjAWFMC8Wcb", // Address of user to check balances
       "DVa7Qmb5ct9RCpaU7UTpSaf3GVMYz17vNVU67XpdCRut", // AMM program id
       "7UF3m8hDGZ6bNnHzaT2YHrhp7A7n9qFfBj6QEpHPv5S8", // Open orders program id
       "C3sT1R3nsw4AVdepvLTLKr5Gvszr7jufyBWUCvy4TUvT", // lpMintAddress
       "3wqhzSB9avepM9xMteiZnbJw75zmTBDVmPFLTQAGcSMN", // Address of reserves0 token (poolCoinTokenaccount)
       "5GtSbKJEPaoumrDzNj4kGkgZtfDyUceKaHrPziazALC1", // Address of reserves1 token (poolPcTokenAccount)
-      RESERVE_0_PRICE,                                //reserve0 usd price
-      RESERVE_1_PRICE                                 //reserve1 usd price
+      RESERVE_0_PRICE,                                // reserve0 usd price
+      RESERVE_1_PRICE                                 // reserve1 usd price
     );
 
     console.log("Borrowed:", borrowed);
@@ -105,8 +105,8 @@ const OrcaVaultExample = async () => {
       "APDFRM3HMr8CAGXwKHiu2f5ePSpaiEJhaURwhsRrUUt9", // lpMintAddress
       "ANP74VNsHwSrq9uUSjiSNyNWvf6ZPrKTmE4gHoNd13Lg", // Address of reserves0 token (poolCoinTokenaccount)
       "75HgnSvXbWKZBpZHveX68ZzAhDqMzNDS29X6BGLtxMo1", // Address of reserves1 token (poolPcTokenAccount)
-      RESERVE_0_PRICE,                                //reserve0 usd price  
-      RESERVE_1_PRICE                                 //reserve1 usd price
+      RESERVE_0_PRICE,                                // reserve0 usd price  
+      RESERVE_1_PRICE                                 // reserve1 usd price
     );
 
     console.log("Borrowed:", borrowed);
