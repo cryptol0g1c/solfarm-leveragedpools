@@ -1,6 +1,7 @@
 const ORCA_FARMS = [
   {
     "name": "SAMO-USDC",
+    "index": 37,
     "lpMintAddress": "6VK1ksrmYGMBWUUZfygGF8tHRGpNxQEWv8pfvzQHdyyc",
     "ammId": "Epvp7qMYAF21VVjacdB3VfKn6nnXQSF4rGYu8sD6Bkow",
     "ammOpenOrders": "11111111111111111111111111111111",
@@ -14,6 +15,7 @@ const ORCA_FARMS = [
   },
   {
     "name": "ATLAS-USDC-ORCA",
+    "index": 27,
     "lpMintAddress": "FZ8x1LCRSPDeHBDoAc3Gc6Y7ETCynuHEr5q5YWV7uRCJ",
     "ammId": "3V5sjXj1mrWjjB1Xt6Xwp554QwHE5fppGSxbk4GzAtEW",
     "ammOpenOrders": "11111111111111111111111111111111",
@@ -27,6 +29,7 @@ const ORCA_FARMS = [
   },
   {
     "name": "POLIS-USDC-ORCA",
+    "index": 28,
     "lpMintAddress": "GteBdo9sqE7T41G8AJsaG9WHW48uXBwsLLznmu2TBdgy",
     "ammId": "CdKPtCb5fBRaGFS4bJgytfReeHuFyhpe9YUyWHPnEWZG",
     "ammOpenOrders": "11111111111111111111111111111111",
@@ -40,6 +43,7 @@ const ORCA_FARMS = [
   },
   {
     "name": "ORCA-USDC",
+    "index": 17,
     "lpMintAddress": "n8Mpu28RjeYD7oUX3LG1tPxzhRZh3YYLRSHcHRdS3Zx",
     "ammId": "2p7nYbtPBgtmY69NsE8DAW6szpRJn7tQvDnqvoEWQvjY",
     "ammOpenOrders": "11111111111111111111111111111111",
@@ -52,6 +56,7 @@ const ORCA_FARMS = [
   },
   {
     "name": "ORCA-SOL",
+    "index": 18,
     "lpMintAddress": "2uVjAuRXavpM6h1scGQaxqb6HVaNRn6T2X7HHXTabz25",
     "ammId": "2ZnVuidTHpi5WWKUwFXauYGhvdT9jRKYv5MDahtbwtYr",
     "ammOpenOrders": "11111111111111111111111111111111",
@@ -64,6 +69,7 @@ const ORCA_FARMS = [
   },
   {
     "name": "SOL-USDC",
+    "index":24,
     "lpMintAddress": "APDFRM3HMr8CAGXwKHiu2f5ePSpaiEJhaURwhsRrUUt9",
     "ammId": "EGZ7tiLeH62TPV1gL8WwbXGzEPa9zmcpVnnkPKKnrE2U",
     "ammOpenOrders": "11111111111111111111111111111111",
@@ -88,6 +94,7 @@ const ORCA_FARMS = [
   },
   {
     "name": "ETH-USDC",
+    "index": 23,
     "lpMintAddress": "3e1W6Aqcbuk2DfHUwRiRcyzpyYRRjg6yhZZcyEARydUX",
     "ammId": "FgZut2qVQEyPBibaTJbbX2PxaMZvT1vjDebiVaDp5BWP",
     "ammOpenOrders": "11111111111111111111111111111111",
@@ -100,6 +107,7 @@ const ORCA_FARMS = [
   },
   {
     "name": "ETH-SOL",
+    "index": 26,
     "lpMintAddress": "71FymgN2ZUf7VvVTLE8jYEnjP3jSK1Frp2XT1nHs8Hob",
     "ammId": "EuK3xDa4rWuHeMQCBsHf1ETZNiEQb5C476oE9u9kp8Ji",
     "ammOpenOrders": "11111111111111111111111111111111",
@@ -112,6 +120,7 @@ const ORCA_FARMS = [
   },
   {
     "name": "SOL-USDT",
+    "index": 25,
     "lpMintAddress": "FZthQCuYHhcfiDma7QrX7buDHwrZEd7vL8SjS6LQa3Tx",
     "ammId": "Dqk7mHQBx2ZWExmyrR2S8X6UG75CrbbpK2FSBZsNYsw6",
     "ammOpenOrders": "11111111111111111111111111111111",
@@ -160,6 +169,7 @@ const ORCA_FARMS = [
   },
   {
     "name": "WHETH-USDC",
+    "index": 29,
     "lpMintAddress": "7NPtjjAP7vhp4t5NCLyY4DY5rurvyc8cgZ2a2rYabRia",
     "ammId": "4reGGLbesqpAeAZdAJv9hhgA2tgj45oGcyRuEvhATdMm",
     "ammOpenOrders": "11111111111111111111111111111111",
@@ -172,6 +182,7 @@ const ORCA_FARMS = [
   },
   {
     "name": "WHETH-SOL",
+    "index": 30,
     "lpMintAddress": "7aYnrdmdCRodDy2Czn6keUquUhjF1jPEmfwZPh488z8U",
     "ammId": "FcEro2uFpHcb7Z785CBs6q12KMJqUJKa8VTXPi4TTBMf",
     "ammOpenOrders": "11111111111111111111111111111111",
@@ -187,6 +198,7 @@ const ORCA_FARMS = [
 const RAY_FARMS = [
   {
     "name": "ATLAS-USDC",
+    "index": 19,
     "lpMintAddress": "9shGU9f1EsxAbiR567MYZ78WUiS6ZNCYbHe53WUULQ7n",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx",
@@ -209,6 +221,7 @@ const RAY_FARMS = [
   },
   {
     "name": "POLIS-USDC",
+    "index": 21,
     "lpMintAddress": "8MbKSBpyXs8fVneKgt71jfHrn5SWtX8n4wMLpiVfF9So",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "poLisWXnNRwC6oBu1vHiuKQzFjGL4XDSu4g9qjz9qVk",
@@ -231,6 +244,7 @@ const RAY_FARMS = [
   },
   {
     "name": "ATLAS-RAY",
+    "index": 20,
     "lpMintAddress": "418MFhkaYQtbn529wmjLLqL6uKxDz7j4eZBaV1cobkyd",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx",
@@ -253,6 +267,7 @@ const RAY_FARMS = [
   },
   {
     "name": "POLIS-RAY",
+    "index": 22,
     "lpMintAddress": "9ysGKUH6WqzjQEUT4dxqYCUaFNVK9QFEa24pGzjFq8xg",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "poLisWXnNRwC6oBu1vHiuKQzFjGL4XDSu4g9qjz9qVk",
@@ -297,6 +312,7 @@ const RAY_FARMS = [
   },
   {
     "name": "RAY-USDT",
+    "index": 2,
     "lpMintAddress": "C3sT1R3nsw4AVdepvLTLKr5Gvszr7jufyBWUCvy4TUvT",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
@@ -319,6 +335,7 @@ const RAY_FARMS = [
   },
   {
     "name": "COPE-USDC",
+    "index": 6,
     "lpMintAddress": "Cz1kUvHw98imKkrqqu95GQB9h1frY8RikxPojMwWKGXf",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "8HGyAAB1yoM1ttS7pXjHMa3dukTFGQggnFFH3hJZgzQh",
@@ -341,6 +358,7 @@ const RAY_FARMS = [
   },
   {
     "name": "RAY-USDC",
+    "index": 0,
     "lpMintAddress": "FbC6K13MzHvN42bXrtGaWsvZY9fxrackRSZcBGfjPc7m",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
@@ -385,6 +403,7 @@ const RAY_FARMS = [
   },
   {
     "name": "RAY-SRM",
+    "index": 3,
     "lpMintAddress": "7P5Thr9Egi2rvMmEuQkLn8x8e8Qro7u2U7yLD2tU2Hbe",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
@@ -407,6 +426,7 @@ const RAY_FARMS = [
   },
   {
     "name": "RAY-SOL",
+    "index": 1,
     "lpMintAddress": "89ZKE4aoyfLBe2RuV6jM3JGNhaV18Nxh8eNtjRcndBip",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
@@ -429,6 +449,7 @@ const RAY_FARMS = [
   },
   {
     "name": "RAY-ETH",
+    "index": 7,
     "lpMintAddress": "mjQH33MqZv5aKAbKHi8dG3g3qXeRQqq1GFcXceZkNSr",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
@@ -451,6 +472,7 @@ const RAY_FARMS = [
   },
   {
     "name": "STEP-USDC",
+    "index": 8,
     "lpMintAddress": "3k8BDobgihmk72jVmXYLE168bxxQUhqqyESW4dQVktqC",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "StepAscQoEioFxxWGnh2sLBDFp9d8rvKz2Yp39iDpyT",
@@ -473,6 +495,7 @@ const RAY_FARMS = [
   },
   {
     "name": "MEDIA-USDC",
+    "index": 5,
     "lpMintAddress": "A5zanvgtioZGiJMdEyaKN4XQmJsp1p7uVxaq2696REvQ",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "ETAtLmCmsoiEEKfNrHKJ2kYy3MoABhU6NQvpSfij5tDs",
@@ -583,6 +606,7 @@ const RAY_FARMS = [
   },
   {
     "name": "MER-USDC",
+    "index": 4,
     "lpMintAddress": "3H9NxvaZoxMZZDZcbBDdWMKbrfNj7PCF5sbRwDr7SdDW",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "MERt85fc5boKw3BW1eYdxonEuJNvXbiMbs6hvheau5K",
@@ -605,6 +629,7 @@ const RAY_FARMS = [
   },
   {
     "name": "ROPE-USDC",
+    "index": 9,
     "lpMintAddress": "Cq4HyW5xia37tKejPF2XfZeXQoPYW6KfbPvxvw5eRoUE",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "8PMHT4swUMtBzgHnh5U564N5sjPSiUz2cjEQzFnnP1Fo",
@@ -627,6 +652,7 @@ const RAY_FARMS = [
   },
   {
     "name": "ALEPH-USDC",
+    "index": 10,
     "lpMintAddress": "iUDasAP2nXm5wvTukAHEKSdSXn8vQkRtaiShs9ceGB7",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "CsZ5LZkDS7h9TDKjrbL7VAwQZ9nsRu8vJLhRYfmGaN8K",
@@ -649,6 +675,7 @@ const RAY_FARMS = [
   },
   {
     "name": "TULIP-USDC",
+    "index": 11,
     "lpMintAddress": "2doeZGLJyACtaG9DCUyqMLtswesfje1hjNA11hMdj6YU",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "TuLipcqtGVXP9XR62wM8WWCm6a9vhLs7T1uoWBk6FDs",
@@ -671,6 +698,7 @@ const RAY_FARMS = [
   },
   {
     "name": "SNY-USDC",
+    "index": 12,
     "lpMintAddress": "G8qcfeFqxwbCqpxv5LpLWxUCd1PyMB5nWb5e5YyxLMKg",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "4dmKkXNHdgYsXqBHCuMikNQWwVomZURhYvkkX5c4pQ7y",
@@ -715,6 +743,7 @@ const RAY_FARMS = [
   },
   {
     "name": "LIKE-USDC",
+    "index": 16,
     "lpMintAddress": "cjZmbt8sJgaoyWYUttomAu5LJYU44ZrcKTbzTSEPDVw",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "3bRTivrVsitbmCTGtqwp7hxXPsybkjn4XLNtPsHqa3zR",
@@ -737,6 +766,7 @@ const RAY_FARMS = [
   },
   {
     "name": "BOP-RAY",
+    "index": 13,
     "lpMintAddress": "9nQPYJvysyfnXhQ6nkK5V7sZG26hmDgusfdNQijRk5LD",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "BLwTnYKqf7u4qjgZrrsKeNs2EzWkMLqVCu6j8iHyrNA3",
@@ -759,6 +789,7 @@ const RAY_FARMS = [
   },
   {
     "name": "SLRS-USDC",
+    "index": 14,
     "lpMintAddress": "2Xxbm1hdv5wPeen5ponDSMT3VqhGMTQ7mH9stNXm9shU",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "SLRSSpSLUTP7okbCUBYStWCo1vUgyt775faPqz8HUMr",
@@ -781,6 +812,7 @@ const RAY_FARMS = [
   },
   {
     "name": "SAMO-RAY",
+    "index": 36,
     "lpMintAddress": "HwzkXyX8B45LsaHXwY8su92NoRBS5GQC32HzjQRDqPnr",
     "rewardAMintAddress": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
     "rewardBMintAddress": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",

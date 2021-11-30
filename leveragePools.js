@@ -13,7 +13,8 @@ const {
   LENDING_OBLIGATION_LAYOUT,
   AMM_INFO_LAYOUT_V4,
   USD_UNIT,
-  ETH_UNIT
+  ETH_UNIT,
+  SOLFARM_PROGRAM_ID,
 } = require("./config");
 
 const {
@@ -23,7 +24,10 @@ const {
   getCoinsUsdValue,
   findReserveToken,
   findVaultInfo,
+  getPoolAccounts,
 } = require('./utils');
+
+const FARM_USER_ADDRESS_INDEX = new BN(0);
 
 /**
  *
@@ -197,13 +201,6 @@ const getPoolStatus = async (_lpMintAddress, _poolCoinTokenaccount, _poolPcToken
  * @param {Pool vault Ray:0 | Orca:1 } _poolVault number
  * @param {Pool Vault address} _vaultAddress address
  * @param {Address of user to check balances} _userAddress address
- * @param {AMM program id} _ammId address
- * @param {Open orders program id} _ammOpenOrders address
- * @param {Address of LP Mint programm} _lpMintAddress address
- * @param {Address of reserves0 token} _poolCoinTokenAccount address
- * @param {Address of reserves1 token} _poolPcTokenAccount address
- * @param {reserve0 usd price} _reserve0Price number
- * @param {reserve1 usd price} _reserve1Price number
  * @returns
  */
 const getSolFarmPoolInfo = async (
@@ -213,13 +210,6 @@ const getSolFarmPoolInfo = async (
   _poolVault,
   _vaultAddress,
   _userAddress,
-  _ammId,
-  _ammOpenOrders,
-  _lpMintAddress,
-  _poolCoinTokenAccount,
-  _poolPcTokenAccount,
-  _reserve0Price,
-  _reserve1Price,
 ) => {
 
   try {
@@ -235,25 +225,38 @@ const getSolFarmPoolInfo = async (
      *
      */
 
-    if (_reserve0Price == undefined || _reserve1Price == undefined)
-      throw ("Reserve prices needs to be passed as parameters");
+    const {
+      account,
+      ammId,
+      ammOpenOrders,
+      lpMintAddress,
+      poolCoinTokenaccount,
+      poolPcTokenaccount,
+      farmIndex,
+      baseMint,
+      quoteMint,
+    } = await getPoolAccounts(0, 'RAY-USDT');
+    /*
+    console.log("baseMint", baseMint);
+    console.log("quoteMint", quoteMint);
+    */
 
     /**
-     * As per protocol, FARM_USER_ADDRESS_INDEX is always 0;
-     */
-    const FARM_USER_ADDRESS_INDEX = new BN(0);
+    * As per protocol, FARM_USER_ADDRESS_INDEX is always 0;
+    */
+    
 
     let key = await findUserFarmAddress(
       b58AddressToPubKey(_userAddress),
-      b58AddressToPubKey(_farmProgramId),
+      b58AddressToPubKey(SOLFARM_PROGRAM_ID),
       FARM_USER_ADDRESS_INDEX,
-      new BN(_farmIndex)
+      new BN(farmIndex)
     );
 
     let [userObligationAcct1] = await findUserFarmObligationAddress(
       b58AddressToPubKey(_userAddress),
       key[0],
-      b58AddressToPubKey(_farmProgramId),
+      b58AddressToPubKey(SOLFARM_PROGRAM_ID),
       new BN(_obligationIndex)
     );
 
@@ -270,8 +273,8 @@ const getSolFarmPoolInfo = async (
 
     const vaultShares = new BN(decoded.vaultShares.toString());
 
-    const userLpTokens =
-      await getDepositedLpTokens(_poolVault, vaultShares, _vaultAddress);
+    const userLpTokens = await getDepositedLpTokens(_poolVault, vaultShares, account);
+
 
     /**
      * To get Pool information
@@ -287,7 +290,7 @@ const getSolFarmPoolInfo = async (
       coinDecimals,
       totalSupply,
       supplyDecimals
-    } = await getPoolStatus(_lpMintAddress, _poolCoinTokenAccount, _poolPcTokenAccount);
+    } = await getPoolStatus(lpMintAddress, poolCoinTokenaccount, poolPcTokenaccount);
 
     let r0Bal;
     let r1Bal;
@@ -303,17 +306,17 @@ const getSolFarmPoolInfo = async (
       let {
         needTakePnlCoin,
         needTakePnlPc
-      } = await getVaultData(_ammId, AMM_INFO_LAYOUT_V4);
+      } = await getVaultData(ammId, AMM_INFO_LAYOUT_V4);
 
       /**
        * Get and decode AMM Open Order values
        */
-      let OPEN_ORDER_INSTRUCTIONS = OpenOrders.getLayout(b58AddressToPubKey(_ammOpenOrders));
+      let OPEN_ORDER_INSTRUCTIONS = OpenOrders.getLayout(b58AddressToPubKey(ammOpenOrders));
 
       let {
         baseTokenTotal,
         quoteTokenTotal
-      } = await getVaultData(_ammOpenOrders, OPEN_ORDER_INSTRUCTIONS);
+      } = await getVaultData(ammOpenOrders, OPEN_ORDER_INSTRUCTIONS);
 
       r0Bal =
         coinBalance
@@ -337,14 +340,16 @@ const getSolFarmPoolInfo = async (
 
     }
 
-    findVaultInfo(1, "SOL-USDC");
+    //findVaultInfo(1, "SOL-USDC");
 
     /**
     * Pool TVL calculations based on reserves and reserves prices.
     */
     const poolTVL = r0Bal
-      .multipliedBy(_reserve0Price)
-      .plus(r1Bal.multipliedBy(_reserve1Price));
+      //.multipliedBy(_reserve0Price)
+      //.plus(r1Bal.multipliedBy(_reserve1Price));
+      .multipliedBy(1)
+      .plus(r1Bal.multipliedBy(1));
 
     const _supplyDecimals = new BN(10 ** supplyDecimals);
 
