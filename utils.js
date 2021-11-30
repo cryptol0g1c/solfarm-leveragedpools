@@ -8,6 +8,16 @@ const {
   LENDING_RESERVES
 } = require('./config');
 
+const {
+  RAY_VAULTS,
+  ORCA_VAULTS,
+} = require('./vaults');
+
+const {
+  RAY_FARMS,
+  ORCA_FARMS,
+} = require('./farms');
+
 /**
  * Given Reserve account we fetch token.
  * @param {reserve account} _account base58() address
@@ -27,9 +37,28 @@ const findReserveToken = (_account) => {
   } catch (error) {
     throw(error);
   }
-  
+
 };
 
+const findVaultInfo = (_vault, _name) => {
+  try {
+
+    if(_name == undefined)
+      throw("Missing 'name' parameter");
+
+    const vault = _vault == 0 ? RAY_VAULTS : ORCA_VAULTS;
+
+    const vaultInfo = _.find(vault, {
+      name: _name
+    });
+
+    console.log(vaultInfo);
+    return vault;
+
+  } catch (error) {
+    throw(error);
+  }
+}
 
 
 /**
@@ -62,8 +91,8 @@ const getCoinsUsdValue = async (_tokenId) => {
 };
 
 /**
- * 
- * @param {big number to format to} _bn 
+ *
+ * @param {big number to format to} _bn
  * @returns formatted bignumber for USD fiat rep.
  */
 const bnToFiatUsd = (_bn) => {
@@ -140,4 +169,5 @@ module.exports = {
   b58AddressToPubKey,
   bnToFiatUsd,
   findReserveToken,
+  findVaultInfo,
 };

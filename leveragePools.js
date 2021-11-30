@@ -22,6 +22,7 @@ const {
   bnToFiatUsd,
   getCoinsUsdValue,
   findReserveToken,
+  findVaultInfo,
 } = require('./utils');
 
 /**
@@ -336,6 +337,8 @@ const getSolFarmPoolInfo = async (
 
     }
 
+    findVaultInfo(1, "SOL-USDC");
+
     /**
     * Pool TVL calculations based on reserves and reserves prices.
     */
@@ -355,23 +358,29 @@ const getSolFarmPoolInfo = async (
     let borrow1 = new BN(decoded.obligationBorrowOne.borrowedAmountWads.toString());
     let borrow2 = new BN(decoded.obligationBorrowTwo.borrowedAmountWads.toString());
 
-    /*
-    let reserveData = findReserveToken(decoded.obligationBorrowOne.borrowReserve.toBase58());
-    console.log(`${reserveData.name} value:`, await getCoinsUsdValue(reserveData.token_id));
-    */
-   
     const borrow1Decimals = new BN(10 ** decoded.coinDecimals);
     const borrow2Decimals = new BN(10 ** decoded.pcDecimals);
 
     let borrowed;
     let borrowValue;
 
+    //TODO: extract function to get reservePrice
     if (!borrow1.isZero()) {
       borrowed = borrow1.div(ETH_UNIT).div(borrow1Decimals);
-      borrowValue = borrowed.multipliedBy(_reserve1Price);
+      const {
+        token_id,
+        name
+      } = findReserveToken(decoded.obligationBorrowOne.borrowReserve.toBase58());
+      const reservePrice = await getCoinsUsdValue(token_id);
+      borrowValue = borrowed.multipliedBy(reservePrice);
+
     } else {
+      const {
+        token_id
+      } = findReserveToken(decoded.obligationBorrowOne.borrowReserve.toBase58());
+      const reservePrice = await getCoinsUsdValue(token_id);
       borrowed = borrow2.div(ETH_UNIT).div(borrow2Decimals);
-      borrowValue = borrowed.multipliedBy(_reserve0Price);
+      borrowValue = borrowed.multipliedBy(reservePrice);
     }
 
     const value = virtualValue.minus(borrowValue);
@@ -380,7 +389,7 @@ const getSolFarmPoolInfo = async (
      * If you want to format yourself, uncomment .toNumber() to get the bignumber struct.
      */
     let vaultInfo = {
-      
+
       borrowed: bnToFiatUsd(borrowed),
       virtualValue: bnToFiatUsd(virtualValue),
       value: bnToFiatUsd(value),
