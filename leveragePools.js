@@ -1,6 +1,6 @@
 const solanaWeb3 = require('@solana/web3.js');
-const { OpenOrders } = require('@project-serum/serum');
 const BN = require('bignumber.js');
+const { OpenOrders } = require('@project-serum/serum');
 
 const connection = new solanaWeb3.Connection(
   "https://solana-api.projectserum.com"
@@ -22,11 +22,14 @@ const {
   b58AddressToPubKey,
   bnToFiatUsd,
   getCoinsUsdValue,
-  findReserveToken,
-  findVaultInfo,
+  findReserveTokenByMint,
+  findReserveTokenByAccount,
   getPoolAccounts,
 } = require('./utils');
 
+/**
+* As per protocol, FARM_USER_ADDRESS_INDEX is always 0;
+*/
 const FARM_USER_ADDRESS_INDEX = new BN(0);
 
 /**
@@ -204,11 +207,8 @@ const getPoolStatus = async (_lpMintAddress, _poolCoinTokenaccount, _poolPcToken
  * @returns
  */
 const getSolFarmPoolInfo = async (
-  _farmIndex,
-  _obligationIndex,
-  _farmProgramId,
   _poolVault,
-  _vaultAddress,
+  _pairName,
   _userAddress,
 ) => {
 
@@ -235,16 +235,7 @@ const getSolFarmPoolInfo = async (
       farmIndex,
       baseMint,
       quoteMint,
-    } = await getPoolAccounts(0, 'RAY-USDT');
-    /*
-    console.log("baseMint", baseMint);
-    console.log("quoteMint", quoteMint);
-    */
-
-    /**
-    * As per protocol, FARM_USER_ADDRESS_INDEX is always 0;
-    */
-    
+    } = await getPoolAccounts(_poolVault, _pairName);
 
     let key = await findUserFarmAddress(
       b58AddressToPubKey(_userAddress),
@@ -253,17 +244,34 @@ const getSolFarmPoolInfo = async (
       new BN(farmIndex)
     );
 
-    let [userObligationAcct1] = await findUserFarmObligationAddress(
-      b58AddressToPubKey(_userAddress),
-      key[0],
-      b58AddressToPubKey(SOLFARM_PROGRAM_ID),
-      new BN(_obligationIndex)
-    );
+    const findAccountInfo = async (
+      _userAddress,
+      _key,
+    ) => {
 
-    let accountInfo = await getAccountInfo(userObligationAcct1.toBase58());
+      try {
+        for (let i = 0; i <= 2; i++) {
+        
+          let [userObligationAcct1] = await findUserFarmObligationAddress(
+            b58AddressToPubKey(_userAddress),
+            _key[0],
+            b58AddressToPubKey(SOLFARM_PROGRAM_ID),
+            new BN(i)
+          );
+          
+          let accInfo = await getAccountInfo(userObligationAcct1.toBase58());
+          
+          if (accInfo.value != null)
+            return accInfo;
+  
+        }
+      } catch (error) {
+        throw(error);
+      }
 
-    if (accountInfo.value == null)
-      throw ("No data on user account, check FARM array position (2nd param on getSolFarmPoolInfo())");
+    };
+
+    const accountInfo = await findAccountInfo(_userAddress, key);
 
     const rawBuffer = accountInfo.value.data[0];
 
@@ -275,14 +283,9 @@ const getSolFarmPoolInfo = async (
 
     const userLpTokens = await getDepositedLpTokens(_poolVault, vaultShares, account);
 
+    if(userLpTokens.toNumber() == 0)
+      throw(`No LP tokens found for ${_pairName}`);
 
-    /**
-     * To get Pool information
-     * pcBalance = Total reserve0 balances
-     * coinBalance = Total reserve1 balances
-     * TotalSupply = total supply of minted lp tokens
-     *
-   */
     let {
       pcBalance,
       pcDecimals,
@@ -340,16 +343,20 @@ const getSolFarmPoolInfo = async (
 
     }
 
-    //findVaultInfo(1, "SOL-USDC");
-
     /**
     * Pool TVL calculations based on reserves and reserves prices.
     */
+    const reserve0 = findReserveTokenByMint(baseMint);
+    const reserve0Price = await getCoinsUsdValue(reserve0.token_id);
+    console.log(`Reserve0: ${reserve0.name} price: ${reserve0Price} USD`);
+
+    const reserve1 = findReserveTokenByMint(quoteMint);
+    const reserve1Price = await getCoinsUsdValue(reserve1.token_id);
+    console.log(`Reserve1: ${reserve1.name} price: ${reserve1Price} USD`);
+
     const poolTVL = r0Bal
-      //.multipliedBy(_reserve0Price)
-      //.plus(r1Bal.multipliedBy(_reserve1Price));
-      .multipliedBy(1)
-      .plus(r1Bal.multipliedBy(1));
+      .multipliedBy(reserve0Price)
+      .plus(r1Bal.multipliedBy(reserve1Price));
 
     const _supplyDecimals = new BN(10 ** supplyDecimals);
 
@@ -358,41 +365,48 @@ const getSolFarmPoolInfo = async (
     const virtualValue = userLpTokens
       .multipliedBy(unitLpValue)
       .div(USD_UNIT)
-      .div(USD_UNIT);
+      .div(USD_UNIT)
 
     let borrow1 = new BN(decoded.obligationBorrowOne.borrowedAmountWads.toString());
     let borrow2 = new BN(decoded.obligationBorrowTwo.borrowedAmountWads.toString());
 
     const borrow1Decimals = new BN(10 ** decoded.coinDecimals);
+
     const borrow2Decimals = new BN(10 ** decoded.pcDecimals);
 
     let borrowed;
     let borrowValue;
 
-    //TODO: extract function to get reservePrice
     if (!borrow1.isZero()) {
+    
       borrowed = borrow1.div(ETH_UNIT).div(borrow1Decimals);
       const {
         token_id,
-        name
-      } = findReserveToken(decoded.obligationBorrowOne.borrowReserve.toBase58());
+      } = findReserveTokenByAccount(decoded.obligationBorrowOne.borrowReserve.toBase58());
+
       const reservePrice = await getCoinsUsdValue(token_id);
       borrowValue = borrowed.multipliedBy(reservePrice);
-
+    
     } else {
+     
       const {
         token_id
-      } = findReserveToken(decoded.obligationBorrowOne.borrowReserve.toBase58());
+      } = findReserveTokenByAccount(decoded.obligationBorrowTwo.borrowReserve.toBase58());
       const reservePrice = await getCoinsUsdValue(token_id);
+     
       borrowed = borrow2.div(ETH_UNIT).div(borrow2Decimals);
       borrowValue = borrowed.multipliedBy(reservePrice);
+
     }
 
     const value = virtualValue.minus(borrowValue);
 
     /**
-     * If you want to format yourself, uncomment .toNumber() to get the bignumber struct.
+     * User LpTokens * token USD value = virtual value
+     * borrowed = obligationBorrowX.borrowedAmountWads
+     * virtual value - borrowed  = value
      */
+
     let vaultInfo = {
 
       borrowed: bnToFiatUsd(borrowed),

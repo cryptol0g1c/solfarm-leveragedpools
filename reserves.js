@@ -1,5 +1,11 @@
 const LENDING_RESERVES = [
   {
+    name: "SOLANA",
+    token_id: "solana",
+    mintAddress: "So11111111111111111111111111111111111111112",
+    decimals: 9
+  },
+  {
     name: 'USDC',
     token_id: 'usd-coin',
     account: 'FTkSmGsJ3ZqDSHdcnY7ejN1pWV3Ej7i88MYpZyyaqgGt',

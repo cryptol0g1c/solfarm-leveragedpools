@@ -19,15 +19,29 @@ const {
 } = require('./farms');
 
 /**
- * Given Reserve account we fetch token.
- * @param {reserve account} _account base58() address
+ * Given Reserve mint we fetch token.
+ * @param {reserve _mint} _account base58() address
  * @returns reserve structure.
  */
-const findReserveToken = (_account) => {
+const findReserveTokenByMint = (_mint) => {
+  try {
+    if (_mint == undefined | _mint == null)
+      throw ("Missing 'mint' parameter");
 
+    const reserve = _.find(LENDING_RESERVES, {
+      mintAddress: _mint
+    });
+
+    return reserve;
+  } catch (error) {
+    throw (error);
+  }
+};
+
+const findReserveTokenByAccount = (_account) => {
   try {
     if (_account == undefined | _account == null)
-      throw ("Missing 'account' parameter");
+      throw ("Missing 'acount' parameter");
 
     const reserve = _.find(LENDING_RESERVES, {
       account: _account
@@ -37,44 +51,7 @@ const findReserveToken = (_account) => {
   } catch (error) {
     throw (error);
   }
-
 };
-
-const findVaultInfo = (_vault, _name) => {
-  try {
-
-    if (_name == undefined)
-      throw ("Missing 'name' parameter");
-
-    const vault = _vault == 0 ? RAY_VAULTS : ORCA_VAULTS;
-
-    const vaultInfo = _.find(vault, {
-      name: _name
-    });
-
-    console.log(vaultInfo);
-    return vault;
-
-  } catch (error) {
-    throw (error);
-  }
-};
-
-/** DATA EXAMPLE
- * RAYDIUM RAY-USDT
- * FARMS.RayUsdtVault,                             // Farm pool index on FARM object
-  0,                                              // Array position on USER_FARM | This can be 0, 1 or 2; set value accordingly
-  SOLFARM_PROGRAM_ID,                             // SOLFARM Program ID (DO NOT MODIFY)
-  0,                                              // RAYDIUM:0 or ORCA:1 vaults
-  "1ZpdBUTiDLTUe3izSdYfRXSf93fpJPmoKtA5bFjGesS",  // Pool "account" | VAULTS
-  "CN8k9NFPZgGdk5QrXXMN1KSD5asWfMwyYHtjMMPTyLSF", // Address of user to check balances | user
-  "DVa7Qmb5ct9RCpaU7UTpSaf3GVMYz17vNVU67XpdCRut", // ammId | FARMS
-  "7UF3m8hDGZ6bNnHzaT2YHrhp7A7n9qFfBj6QEpHPv5S8", // ammOpenOrders | FARMS
-  "C3sT1R3nsw4AVdepvLTLKr5Gvszr7jufyBWUCvy4TUvT", // lpMintAddress | FARMS
-  "3wqhzSB9avepM9xMteiZnbJw75zmTBDVmPFLTQAGcSMN", // poolCoinTokenaccount | FARMS
-  "5GtSbKJEPaoumrDzNj4kGkgZtfDyUceKaHrPziazALC1", // poolPcTokenAccount | FARMS
- ** /
- */
 
 /**
  * 
@@ -99,11 +76,13 @@ const getPoolAccounts = (_pool, _pairName) => {
         serumBaseMint,
         serumQuoteMint
       } = _.find(RAY_VAULTS, { name: _pairName });
+     
       _account = account;
       baseMint = serumBaseMint;
       quoteMint = serumQuoteMint;
 
     } else {
+
       const {
         account,
         swap_token_a_mint,
@@ -113,8 +92,8 @@ const getPoolAccounts = (_pool, _pairName) => {
       _account = account;
       baseMint = swap_token_a_mint;
       quoteMint = swap_token_b_mint;
-    }
 
+    }
 
     const {
       ammId,
@@ -137,8 +116,7 @@ const getPoolAccounts = (_pool, _pairName) => {
       quoteMint,
     };
   } catch (error) {
-    console.log(`Error fetching pool accounts: ${error}`);
-    throw (error);
+    throw (`${_pairName} pair not found, try other like: RAY-USDT`);
   }
 
 };
@@ -185,10 +163,9 @@ const bnToFiatUsd = (_bn) => {
     if (!BN.isBigNumber(_bn))
       throw ("Not big Number");
 
-    return _bn.dp(2).toNumber();
+    return _bn.dp(3).toNumber();
   } catch (error) {
-    console.log(`Error formatting BN to USD: ${error}`);
-    throw (error);
+    throw ("Error formatting BN to USD");
   }
 
 };
@@ -251,7 +228,7 @@ module.exports = {
   getAccountInfo,
   b58AddressToPubKey,
   bnToFiatUsd,
-  findReserveToken,
-  findVaultInfo,
+  findReserveTokenByMint,
+  findReserveTokenByAccount,
   getPoolAccounts,
 };
