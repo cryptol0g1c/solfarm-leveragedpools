@@ -1,6 +1,6 @@
-const { 
+const {
   getSolFarmPoolInfo
- } = require('./leveragePools');
+} = require('./leveragePools');
 
 const POOLS = {
   RAYDIUM: 0,
@@ -12,43 +12,44 @@ const main = async () => {
   /**
    *  Fill this with proper values
    */
-  
+
   // ORCA SOL_USDC Example
   await getVaultData(
     POOLS.ORCA,
     "ORCA-USDC",
-    "BN2vN85Q4HiWJL6JejX2ke82fKY7nxnFUBjAWFMC8Wcb"
+    "f97zRpxzr8ZmacmeWvTxpJDNVdEJeVJtqhM9cAnekca"
   );
-  
-  // RAYDIUM RAY_USDT EXAMPLE
+
+  //RAYDIUM RAY_USDT EXAMPLE
   await getVaultData(
     POOLS.RAYDIUM,
-    "RAY-USDT",
-    "BN2vN85Q4HiWJL6JejX2ke82fKY7nxnFUBjAWFMC8Wcb",
+    "RAY-USDC",
+    "f97zRpxzr8ZmacmeWvTxpJDNVdEJeVJtqhM9cAnekca",
   );
 
 };
 
 const getVaultData = async (
-    _pool,
-    _pair,
-    _userPubKey
-  ) => {
+  _pool,
+  _pair,
+  _userPubKey
+) => {
 
   try {
 
-    let { borrowed, virtualValue, value } = await getSolFarmPoolInfo(
+    let { borrowed, virtualValue, value, debtValue, borrowedAsset } = await getSolFarmPoolInfo(
       _pool,
       _pair,
       _userPubKey,
     );
-    
+
     console.log("User Key", _userPubKey);
     console.log("Pair", _pair);
-    console.log("Borrowed:", borrowed);
-    console.log("VirtualValue:", virtualValue);
-    console.log("Value:", value);
-    console.log("--")
+    console.log(`Borrowed: ${borrowed} ${borrowedAsset}`);
+    console.log(`Position Value: ${virtualValue} USD`);
+    console.log(`Debt Value: ${debtValue} USD`);
+    console.log(`Equity Value: ${value} USD`);
+    console.log("");
 
     return {
       borrowed, virtualValue, value
