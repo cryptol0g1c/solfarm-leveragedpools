@@ -377,7 +377,12 @@ const getSolFarmPoolInfo = async (
     let borrowValue;
     let borrowedAsset;
 
-    if (!borrow1.isZero()) {
+    if (!borrow1.isZero() && !borrow2.isZero()) {
+
+      //TODO: support dual leverage borrow.
+      throw("Dual borrow not supported");
+
+    } else if (!borrow1.isZero()) {
 
       borrowed = borrow1.div(ETH_UNIT).div(borrow1Decimals);
       const {

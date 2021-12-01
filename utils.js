@@ -165,6 +165,7 @@ const bnToFiatUsd = (_bn) => {
 
     return _bn.dp(2).toNumber();
   } catch (error) {
+    console.log(error);
     throw ("Error formatting BN to USD");
   }
 
