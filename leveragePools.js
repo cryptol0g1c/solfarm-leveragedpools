@@ -369,7 +369,7 @@ const getSolFarmPoolInfo = async (
 
     let borrow1 = new BN(decoded.obligationBorrowOne.borrowedAmountWads.toString());
     let borrow2 = new BN(decoded.obligationBorrowTwo.borrowedAmountWads.toString());
-
+    
     const borrow1Decimals = new BN(10 ** decoded.coinDecimals);
     const borrow2Decimals = new BN(10 ** decoded.pcDecimals);
 
@@ -379,8 +379,31 @@ const getSolFarmPoolInfo = async (
 
     if (!borrow1.isZero() && !borrow2.isZero()) {
 
-      //TODO: support dual leverage borrow.
-      throw("Dual borrow not supported");
+      let _tempData;
+
+      let borrowed1 = borrow1.div(ETH_UNIT).div(borrow1Decimals);
+      let borrowed2 = borrow2.div(ETH_UNIT).div(borrow2Decimals);
+
+      _tempData = findReserveTokenByAccount(decoded.obligationBorrowOne.borrowReserve.toBase58());
+      let r1Price = await getCoinsUsdValue(_tempData.token_id);
+      const borrow1Name = _tempData.name;
+
+      const borrow1Value = borrowed1.multipliedBy(r1Price);
+
+      _tempData = findReserveTokenByAccount(decoded.obligationBorrowTwo.borrowReserve.toBase58());
+      let r2Price = await getCoinsUsdValue(_tempData.token_id);
+      const borrow2Name = _tempData.name;
+
+      const borrow2Value = borrowed2.multipliedBy(r2Price);
+
+      borrowed = [
+        bnToFiatUsd(borrowed1),
+        bnToFiatUsd(borrowed2)
+      ];
+
+      borrowValue = borrow1Value.plus(borrow2Value);
+
+      borrowedAsset = `${borrow1Name} | ${borrow2Name}`;
 
     } else if (!borrow1.isZero()) {
 
@@ -396,13 +419,14 @@ const getSolFarmPoolInfo = async (
 
     } else {
 
+      borrowed = borrow2.div(ETH_UNIT).div(borrow2Decimals);
+
       const {
         token_id,
         name,
       } = findReserveTokenByAccount(decoded.obligationBorrowTwo.borrowReserve.toBase58());
       const reservePrice = await getCoinsUsdValue(token_id);
 
-      borrowed = borrow2.div(ETH_UNIT).div(borrow2Decimals);
       borrowValue = borrowed.multipliedBy(reservePrice);
       borrowedAsset = name;
     }
@@ -417,7 +441,7 @@ const getSolFarmPoolInfo = async (
 
     let vaultInfo = {
 
-      borrowed: bnToFiatUsd(borrowed),
+      borrowed,
       virtualValue: bnToFiatUsd(virtualValue),
       value: bnToFiatUsd(value),
       debtValue: bnToFiatUsd(borrowValue),

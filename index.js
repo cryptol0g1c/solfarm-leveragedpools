@@ -13,14 +13,14 @@ const main = async () => {
    *  Fill this with proper values
    */
 
-  // ORCA SOL_USDC Example
+  // ORCA WHETH-USDC Example
   await getVaultData(
     POOLS.ORCA,
-    "ORCA-USDC",
-    "f97zRpxzr8ZmacmeWvTxpJDNVdEJeVJtqhM9cAnekca"
+    "WHETH-USDC",
+    "BN2vN85Q4HiWJL6JejX2ke82fKY7nxnFUBjAWFMC8Wcb"
   );
 
-  //RAYDIUM RAY_USDT EXAMPLE
+  //RAYDIUM RAY_USDC EXAMPLE
   await getVaultData(
     POOLS.RAYDIUM,
     "RAY-USDC",

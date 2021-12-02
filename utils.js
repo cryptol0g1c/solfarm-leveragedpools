@@ -163,7 +163,7 @@ const bnToFiatUsd = (_bn) => {
     if (!BN.isBigNumber(_bn))
       throw ("Not big Number");
 
-    return _bn.dp(2).toNumber();
+    return _bn.dp(3).toNumber();
   } catch (error) {
     console.log(error);
     throw ("Error formatting BN to USD");
