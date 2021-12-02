@@ -10,15 +10,15 @@ const POOLS = {
 const main = async () => {
 
   /**
-   *  Fill this with proper values
+   *  Fill this with proper values and uncomment.
    */
 
   // ORCA WHETH-USDC Example
-  await getVaultData(
-    POOLS.ORCA,
-    "WHETH-USDC",
-    "BN2vN85Q4HiWJL6JejX2ke82fKY7nxnFUBjAWFMC8Wcb"
-  );
+  // await getVaultData(
+  //   POOLS.ORCA,
+  //   "WHETH-USDC",
+  //   "BN2vN85Q4HiWJL6JejX2ke82fKY7nxnFUBjAWFMC8Wcb"
+  // );
 
   //RAYDIUM RAY_USDC EXAMPLE
   await getVaultData(

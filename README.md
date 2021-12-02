@@ -8,29 +8,49 @@ To install dependencies run:
 
 ### Usage
 
-An example usage can be found on index.js file with pre-loaded RAY-USDT (RAYDIUM) or SOL-USDC (ORCA)
+An example usage can be found on index.js file with pre-loaded (RAYDIUM) and(ORCA)
 
 ```
-ORCA SOL_USDC Example
-//await OrcaVaultExample();
-  
-RAYDIUM RAY_USDT EXAMPLE
-//await RayVaultExample();
+  // ORCA WHETH-USDC Example
+  await getVaultData(
+    POOLS.ORCA,
+    "WHETH-USDC",
+    "BN2vN85Q4HiWJL6JejX2ke82fKY7nxnFUBjAWFMC8Wcb"
+  );
+
+  //RAYDIUM RAY_USDC EXAMPLE
+  await getVaultData(
+    POOLS.RAYDIUM,
+    "RAY-USDC",
+    "f97zRpxzr8ZmacmeWvTxpJDNVdEJeVJtqhM9cAnekca",
+  );
 ```
 
-Uncomment example you want to test.
+Complete the parameters with proper values:
 
-To fetch all accounts of each pools check:
-- [SOLFARM RAYDIUM Pool Info](https://gist.github.com/therealssj/c6049ac59863df454fb3f4ff19b529ee)
-- [SOLFARM ORCA Pool Info](https://gist.github.com/therealssj/c42df1c34c3a385c07fddda6df47d248)
+1. Param is the pool project: POOLS.RAYDIUM or POOLS.ORCA
+2. Pair name as seen in [Tulip Site](https://tulip.garden) site, example "RAY-USDC"
+3. User PubKey.
 
-If accounts and parameters are properly setted up, result will show something like:
+The script will fetch all needed accounts automatically.
+
+After completing the parameters just run:
 
 ```
-//ORCA SOL-USDC Pool
-Borrowed: 0.061414381
-VirtualValue: 23.829277143471057
-Value: 11.886022470401057
+npm run fetch
+```
+
+An example response look like this:
+
+```
+Reserve0: RAY price: 11.16 USD
+Reserve1: USDC price: 1 USD
+User Key f97zRpxzr8ZmacmeWvTxpJDNVdEJeVJtqhM9cAnekca
+Pair RAY-USDC
+Borrowed: 98.522212 USDC
+Position Value: 148 USD
+Debt Value: 98.522 USD
+Equity Value: 49.477 USD
 ```
 
 Note: reserve prices needs to be included in order to do proper calculations.
