@@ -20,11 +20,11 @@ const main = async () => {
   //   "BN2vN85Q4HiWJL6JejX2ke82fKY7nxnFUBjAWFMC8Wcb"
   // );
 
-  //RAYDIUM RAY_USDC EXAMPLE
+  //RAYDIUM RAY-SOL EXAMPLE
   await getVaultData(
     POOLS.RAYDIUM,
-    "RAY-USDC",
-    "f97zRpxzr8ZmacmeWvTxpJDNVdEJeVJtqhM9cAnekca",
+    "RAY-SOL",
+    "FX7DL4WUQATRtU5oEjxX5hsrqrnteeXXySqo9JZaTzN9"
   );
 
 };
@@ -52,7 +52,7 @@ const getVaultData = async (
     console.log("");
 
     return {
-      borrowed, virtualValue, value
+      borrowed, virtualValue, value, debtValue, borrowedAsset
     };
 
   } catch (error) {

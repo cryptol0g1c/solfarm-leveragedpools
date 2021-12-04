@@ -2,19 +2,15 @@ const solanaWeb3 = require('@solana/web3.js');
 const BN = require('bignumber.js');
 const { OpenOrders } = require('@project-serum/serum');
 
-const connection = new solanaWeb3.Connection(
-  "https://solana-api.projectserum.com"
-);
-
 const {
   VAULT_LAYOUT,
   ORCA_VAULT_LAYOUT,
   MINT_LAYOUT,
   LENDING_OBLIGATION_LAYOUT,
   AMM_INFO_LAYOUT_V4,
-  USD_UNIT,
   ETH_UNIT,
   SOLFARM_PROGRAM_ID,
+  RPC_URL,
 } = require("./config");
 
 const {
@@ -26,6 +22,10 @@ const {
   findReserveTokenByAccount,
   getPoolAccounts,
 } = require('./utils');
+
+const connection = new solanaWeb3.Connection(
+  RPC_URL
+);
 
 /**
 * As per protocol, FARM_USER_ADDRESS_INDEX is always 0;
@@ -250,6 +250,8 @@ const getSolFarmPoolInfo = async (
     ) => {
 
       try {
+        let accInfo;
+
         for (let i = 0; i <= 2; i++) {
 
           let [userObligationAcct1] = await findUserFarmObligationAddress(
@@ -259,12 +261,15 @@ const getSolFarmPoolInfo = async (
             new BN(i)
           );
 
-          let accInfo = await getAccountInfo(userObligationAcct1.toBase58());
+          accInfo = await getAccountInfo(userObligationAcct1.toBase58());
 
           if (accInfo.value != null)
             return accInfo;
-
         }
+        
+        if(accInfo.value == null)
+          throw("Can't find obligation index");
+
       } catch (error) {
         throw (error);
       }
@@ -365,14 +370,11 @@ const getSolFarmPoolInfo = async (
 
     const virtualValue = userLpTokens
       .multipliedBy(unitLpValue)
-      .div(USD_UNIT)
+      .div(_supplyDecimals)
 
     let borrow1 = new BN(decoded.obligationBorrowOne.borrowedAmountWads.toString());
     let borrow2 = new BN(decoded.obligationBorrowTwo.borrowedAmountWads.toString());
     
-    const borrow1Decimals = new BN(10 ** decoded.coinDecimals);
-    const borrow2Decimals = new BN(10 ** decoded.pcDecimals);
-
     let borrowed;
     let borrowValue;
     let borrowedAsset;
@@ -381,20 +383,21 @@ const getSolFarmPoolInfo = async (
 
       let _tempData;
 
-      let borrowed1 = borrow1.div(ETH_UNIT).div(borrow1Decimals);
-      let borrowed2 = borrow2.div(ETH_UNIT).div(borrow2Decimals);
-
       _tempData = findReserveTokenByAccount(decoded.obligationBorrowOne.borrowReserve.toBase58());
       let r1Price = await getCoinsUsdValue(_tempData.token_id);
-      const borrow1Name = _tempData.name;
 
+      let borrowed1 = borrow1.div(ETH_UNIT).div(_tempData.decimals);
       const borrow1Value = borrowed1.multipliedBy(r1Price);
+
+      const borrow1Name = _tempData.name;
 
       _tempData = findReserveTokenByAccount(decoded.obligationBorrowTwo.borrowReserve.toBase58());
       let r2Price = await getCoinsUsdValue(_tempData.token_id);
-      const borrow2Name = _tempData.name;
 
+      let borrowed2 = borrow2.div(ETH_UNIT).div(_tempData.decimals);
       const borrow2Value = borrowed2.multipliedBy(r2Price);
+      
+      const borrow2Name = _tempData.name;
 
       borrowed = [
         bnToFiatUsd(borrowed1),
@@ -407,27 +410,34 @@ const getSolFarmPoolInfo = async (
 
     } else if (!borrow1.isZero()) {
 
-      borrowed = borrow1.div(ETH_UNIT).div(borrow1Decimals);
       const {
         token_id,
         name,
-      } = findReserveTokenByAccount(decoded.obligationBorrowOne.borrowReserve.toBase58());
+        decimals,
+      } = findReserveTokenByAccount(decoded.obligationBorrowOne.borrowReserve.toBase58()); 
+
+      const borrow1Decimals = new BN(10 ** decimals);
+      borrowed = borrow1.div(ETH_UNIT).div(borrow1Decimals);
 
       const reservePrice = await getCoinsUsdValue(token_id);
       borrowValue = borrowed.multipliedBy(reservePrice);
+      
       borrowedAsset = name;
 
     } else {
 
-      borrowed = borrow2.div(ETH_UNIT).div(borrow2Decimals);
-
       const {
         token_id,
         name,
+        decimals,
       } = findReserveTokenByAccount(decoded.obligationBorrowTwo.borrowReserve.toBase58());
-      const reservePrice = await getCoinsUsdValue(token_id);
+      
+      const borrow2Decimals = new BN(10 ** decimals);
+      borrowed = borrow2.div(ETH_UNIT).div(borrow2Decimals);
 
+      const reservePrice = await getCoinsUsdValue(token_id);
       borrowValue = borrowed.multipliedBy(reservePrice);
+
       borrowedAsset = name;
     }
 

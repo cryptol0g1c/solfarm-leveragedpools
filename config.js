@@ -3,6 +3,7 @@ const { blob } = require("buffer-layout");
 const { publicKey, u64, u8, u128, u32, bool, struct } = require("@project-serum/borsh");
 
 const SOLFARM_PROGRAM_ID = "Bt2WPMmbwHPk36i4CRucNDyLcmoGdC7xEdrVuxgJaNE6";
+const RPC_URL = "https://solana-api.projectserum.com";
 
 const FARMS = {
   RayUsdcVault: 0,
@@ -295,6 +296,7 @@ module.exports = {
   USER_FARM,
   USD_UNIT,
   ETH_UNIT,
+  RPC_URL,
 };
 
 

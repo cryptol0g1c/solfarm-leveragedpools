@@ -1,3 +1,6 @@
+/**
+ * Source: https://gist.github.com/therealssj/934c9b1d23a97f0d099b74abbdc31526
+ */
 const LENDING_RESERVES = [
   {
     name: "SOLANA",
@@ -14,13 +17,9 @@ const LENDING_RESERVES = [
     liquidityFeeReceiver: 'GPf4tD3q71BzPU79YCadYB2NnLciXAVmYuxfgbKKzUdU',
     collateralTokenMint: 'Amig8TisuLpzun8XyGfC5HJHHGUQEscjLgoTWsCCKihg',
     collateralTokenSupply: 'GkhrquZah6wrGvM5GntLPWaG5TDdCk6n3QPvohHxWpak',
-    destinationCollateralTokenAccount:
-      '4s4fdm8fsnFdbEnujgASXwDFZ43afVnSzmk7MDA9Lqhn',
+    destinationCollateralTokenAccount: '4s4fdm8fsnFdbEnujgASXwDFZ43afVnSzmk7MDA9Lqhn',
     quoteTokenMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-
-    //decimals: TOKENS.USDC.decimals,
-    // decimals: 6,
-    ////logo: usdcLogo,
+    decimals: 6,
     visible: true,
   },
   {
@@ -34,9 +33,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: 'CSeQwrb7NHGDJkThJjMPVsQ6Rwb7wMgyFJPDS9gfjxAM',
     destinationCollateralTokenAccount: '7t3cWUB6XjwGhqreuK3uxv1BKP5Luczq4VqLSEB4Q9AJ',
     quoteTokenMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-
-    //decimals: TOKENS.USDT.decimals,
-    //logo: usdtLogo,
+    decimals: 6,
     visible: true,
   },
   {
@@ -48,15 +45,11 @@ const LENDING_RESERVES = [
     liquidityFeeReceiver: '4bRQL2hLqfinNJTsiQW6odhYtYjKXH7zsPc2tafadgoj',
     collateralTokenMint: '8Lg7TowFuMQoGiTsLE6qV9x3czRgDmVy8f8Vv8KS4uW',
     collateralTokenSupply: '2ESAmYeYCW7ee9tcMUdFeW912Sjn8wjeD8odmrvJkeiN',
-    destinationCollateralTokenAccount:
-      'DAKrpC5HmQrUzbcqKPKE5hK5xfdXdFdf8sxZqhTct4ug',
+    destinationCollateralTokenAccount: 'DAKrpC5HmQrUzbcqKPKE5hK5xfdXdFdf8sxZqhTct4ug',
     quoteTokenMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-
-    //decimals: TOKENS.RAY.decimals,
-    //logo: rayLogo,
+    decimals: 6,
     visible: true,
     borrowDisabled: true,
-    // whitelisted: false
   },
   {
     name: 'SOL',
@@ -69,9 +62,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: '8sVTGPsSYkAXFS4tfW5k5z9FvcWhvBqYdMyiiWbbuT7g',
     destinationCollateralTokenAccount: '77QZQaxe6Gyn3zw2rnHYR2NmG5KaEGbmqPYmjuC4qguB',
     quoteTokenMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    //decimals: NATIVE_SOL.decimals,
-    // decimals: 6,
-    //logo: solLogo,
+    decimals: 9,
     visible: true,
   },
   {
@@ -85,9 +76,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: 'MDFmkdjJ92y94DDjKCFjDYoU95e2pPefrDEB4gfP53w',
     destinationCollateralTokenAccount: '4GbtgR99acKG27cn9j5yHGsAnfduWqaRCX5s4oeze42C',
     quoteTokenMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    //decimals: TOKENS.MSOLRAYDIUM.decimals,
-    // decimals: 6,
-    //logo: msolLogo,
+    decimals: 9,
     visible: true,
   },
   {
@@ -101,8 +90,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: '9KJNRpfHcdBZH5tTCBsxdUQXrJitpQpmU9T7GxQTQpYK',
     destinationCollateralTokenAccount: '4R4V2LatVjWUMpNj5XtfgG4rhPWMwk2ouVyN8gXXbYME',
     quoteTokenMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    //decimals: TOKENS.SRM.decimals,
-    //logo: srmLogo,
+    decimals: 6,
     visible: true,
   },
   {
@@ -114,13 +102,9 @@ const LENDING_RESERVES = [
     liquidityFeeReceiver: '5BYymW3BYr63xrYMojL6qWMPmpicTXPPnuUykUmAmKnj',
     collateralTokenMint: 'G5V7t3ZHTUGi6xGfk5nc42P1iRkNN3JhaFwFXkvyDmz5',
     collateralTokenSupply: 'CpfUmNBXwJwqETF61YMYqHzyXjpraJmQtBT9ZBjzDxWL',
-    destinationCollateralTokenAccount:
-        'HwTx1mewMgWb6Hkk8eRTbE8WgmNPyk5PZwRoeEjsRfXB',
+    destinationCollateralTokenAccount: 'HwTx1mewMgWb6Hkk8eRTbE8WgmNPyk5PZwRoeEjsRfXB',
     quoteTokenMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-
-    //decimals: TOKENS.BTC.decimals,
-    // decimals: 6,
-    //logo: btcLogo,
+    decimals: 6,
     visible: true,
   },
   {
@@ -134,8 +118,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "Ft59j4mGN3JwD9rixqpepFJoAR2VjDyoESH6qApFQtw7",
     destinationCollateralTokenAccount: "5E2FmPnj2Yrn7ZbiGLYtesHQHuUiy4hUKacr7sywcsTv",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.whETH.decimals,
-    //logo: ethLogo,
+    decimals: 8,
     visible: true,
   },
 
@@ -150,8 +133,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "HnqohLynuMh1JZdKUgbS8v6K1sG2QpVEUQqahdtqKXP6",
     destinationCollateralTokenAccount: "3UWp5EuVFpeTpgRRGBudDfYJtiaQWcDYVRJ7scQL4hyo",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.ETH.decimals,
-    //logo: ethLogo,
+    decimals: 6,
     visible: true,
   },
   {
@@ -165,8 +147,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "L5FGnzwtpzRisovasyggpAYkZFnSrwLwHWxQ3j1efiV",
     destinationCollateralTokenAccount: "3CpSwf5Ait6YGD9XgmGqNqj6jqEBX3PWkxYumt8fzY7L",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.DFL.decimals,
-    //logo: dflLogo,
+    decimals: 9,
     visible: true,
   },
   {
@@ -180,8 +161,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "9uv5bScpye91V22KU5bgVebQGx1yg98MHWUNfDeYoynJ",
     destinationCollateralTokenAccount: "5LrfV4Bnj1uioSKAHTbL5hTh8JTKDLBKxGFxcSDeE2se",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.ATLAS.decimals,
-    //logo: atlasLogo,
+    decimals: 8,
     visible: true,
     borrowDisabled: true
   },
@@ -196,8 +176,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "3AH6WZBW5yYbS6shZAvQTB4iW5d4Shb1EBMMPThGzyQP",
     destinationCollateralTokenAccount: "3x5ZLLUwreSHmdPqegC3dt8jH6TXzmqSTxc9iFnt8Y9e",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.POLIS.decimals,
-    //logo: polisLogo,
+    decimals: 8,
     visible: true,
     borrowDisabled: true
   },
@@ -212,8 +191,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "7ffRNyEMYoHZ4eZNHhDPDQTVVXa5dtgoLCwWWkiprCdG",
     destinationCollateralTokenAccount: "CQMNF7T32Tg6oryUVSptFiKb4SA4j8f48GenUC8CPcei",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.TULIP.decimals,
-    //logo: tulipLogo,
+    decimals: 6,
     visible: true,
     borrowDisabled: true
   },
@@ -228,8 +206,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "z4VJb6aA1gbJHNU7L6R4n48fpckFCvim15xgq7F2jDY",
     destinationCollateralTokenAccount: "CCnBMpVNBuL42QtxP2CtQc1pUbEGSYhx6VJ3dwWqq8GF",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.SAMO.decimals,
-    //logo: samoLogo,
+    decimals: 9,
     visible: true,
   },
   {
@@ -244,8 +221,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "7QJw944wtodBV2bVfd2ajHxeAv99Zopo39QyvF3anHMb",
     destinationCollateralTokenAccount: "FKctxJ52noZmRN9uofXJi2gJy4Fk7A8d87bdaiCYi7Qu",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.STEP.decimals,
-    //logo: stepLogo,
+    decimals: 9,
     visible: false,
   },
   {
@@ -259,8 +235,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "HY3edUqqoHFXDTYkFpsv6hHzH81Qiiq3DqCgRH37uP2c",
     destinationCollateralTokenAccount: "5hGH1JPeQzzAZv7DrZNiTyvMj8GEEVQDWR4bqAFzXieu",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.ORCA.decimals,
-    //logo: orcaLogo,
+    decimals: 6,
     visible: true,
     borrowDisabled: true
   },
@@ -275,8 +250,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "3dF8iELN9DHDT4D2oMwb7LjuDZDn3Rxx3VtZKVTApWqo",
     destinationCollateralTokenAccount: "CJ21ub2pk4VwKK2JU97hR6krbfEmvcANkBNgGAbwgvDX",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.GENE.decimals,
-    //logo: geneLogo,
+    decimals: 9,
     visible: true,
   },
   {
@@ -290,8 +264,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "Doia9pBqHjtcRZCVaFoENfRYc6G5TaTmAJpeoeMPVbab",
     destinationCollateralTokenAccount: "9HNaGXfNef3iCeZUKCUDmuVrpoCCf3n4MbdqrbRuUxZ",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.SNY.decimals,
-    //logo: snyLogo,
+    decimals: 6,
     visible: true,
     borrowDisabled: true
   },
@@ -306,8 +279,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "7k9tKTzMdCuxm9ocGEFUkDnZTw5K4acAzawyV1narjQ1",
     destinationCollateralTokenAccount: "HdxLdWVJHha1BZVw9gp8WnKgLR4q9tPgyMRim16H8U88",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.ROPE.decimals,
-    //logo: ropeLogo,
+    decimals: 9,
     visible: false,
   },
   {
@@ -321,8 +293,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "EfFKjzmFtoPPBoz1V78cgvQegoFFE3AKanBh2AT7p1kz",
     destinationCollateralTokenAccount: "LX7xER7JXiy8KrK1NnnRN44fN7LFJay6iUqH4cXBLKu",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.COPE.decimals,
-    //logo: copeLogo,
+    decimals: 6,
     visible: true,
     borrowDisabled: true
   },
@@ -337,8 +308,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "35jP1V7JQby5wLo3yutNa6dZ2nwWUoVUKiyc63Wr2dB4",
     destinationCollateralTokenAccount: "DKfXtqJFy5YCD4r4Uxyjampf7p6ahmS7FuAmkRzP6QbW",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.ALEPH.decimals,
-    //logo: alephLogo,
+    decimals: 6,
     visible: true,
     borrowDisabled: true
   },
@@ -353,8 +323,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "7WMg5Y5JANsucf5noBMDVJ4kAqu5Y27KGpDdsc6xqukT",
     destinationCollateralTokenAccount: "DAxvxAb2K6aFadQqn1rsJphirCS6AFM7mJrApPLSgELo",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.MEDIA.decimals,
-    //logo: mediaLogo,
+    decimals: 6,
     visible: true,
     borrowDisabled: true
   },
@@ -369,8 +338,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "FYNSmQBv6WxJETxDzrpwPpda1sohzMX8xbEdkquMoysr",
     destinationCollateralTokenAccount: "GfWjrthTwB9DHwNQirS1XfGiFcRm9Q6KrjJdGyTATjCd",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.SLRS.decimals,
-    //logo: slrsLogo,
+    decimals: 6,
     visible: true,
     borrowDisabled: true
   },
@@ -385,8 +353,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "2NfkjMBcVTjMx4adV6LQsLjm3amB1HFXoo8wEjktRgTx",
     destinationCollateralTokenAccount: "3raVVLvK8V8UhxAWKdeFBPLBj8vBU3cyuJ6MpuY4Gdm1",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.LIKE.decimals,
-    //logo: likeLogo,
+    decimals: 9,
     visible: true,
     borrowDisabled: true
   },
@@ -402,8 +369,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "36282GgQ2WwXonxWAHxuSbXGSwbY98LWTaEVz8oXrmCf",
     destinationCollateralTokenAccount: "4kjiXc45iZazVUtwcywgQD7GVM4K4XGqodWNzVxajgkA",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.STARS.decimals,
-    //logo: starsLogo,
+    decimals: 6,
     visible: false,
   },
   {
@@ -417,8 +383,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "DAmpNbLFGWZrNqsBLF7dmYMM9QMbxktQ2Y8dfx88ZVTe",
     destinationCollateralTokenAccount: "HKxr5BdAnYc6oUMra1kyEdeqMMcNsmkDnAmwUa1gi2HP",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.weUNI.decimals,
-    //logo: weUNILogo,
+    decimals: 8,
     visible: false,
   },
   {
@@ -432,8 +397,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "8n7bsURa8dQr5TDbjvz2yUQzzLYF9B6X97HJ4x6omniY",
     destinationCollateralTokenAccount: "4bYUHj4cvyw3cjF3b4L6HcG7EiRRvfH7adiJFnHbKAYS",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.weSUSHI.decimals,
-    //logo: weSushiLogo,
+    decimals: 8,
     visible: false,
   },
   {
@@ -447,8 +411,7 @@ const LENDING_RESERVES = [
     collateralTokenSupply: "2H4cED2cKubaBUHmCHS779uyMUKpfkGAFpB52VsFS7C6",
     destinationCollateralTokenAccount: "4bYUHj4cvyw3cjF3b4L6HcG7EiRRvfH7adiJFnHbKAYS",
     quoteTokenMint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    //decimals: TOKENS.weDYDX.decimals,
-    //logo: weSushiLogo,
+    decimals: 8,
     visible: false,
   },
 ];

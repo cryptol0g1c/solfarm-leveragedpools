@@ -18,6 +18,10 @@ const {
   ORCA_FARMS,
 } = require('./farms');
 
+const {
+  RPC_URL
+} = require('./config');
+
 /**
  * Given Reserve mint we fetch token.
  * @param {reserve _mint} _account base58() address
@@ -64,7 +68,6 @@ const getPoolAccounts = (_pool, _pairName) => {
   try {
     const _FARM = _pool == 0 ? RAY_FARMS : ORCA_FARMS;
 
-    //TODO: Better error ir PAIR does not exist.
     let baseMint;
     let quoteMint;
     let _account;
@@ -76,7 +79,7 @@ const getPoolAccounts = (_pool, _pairName) => {
         serumBaseMint,
         serumQuoteMint
       } = _.find(RAY_VAULTS, { name: _pairName });
-     
+    
       _account = account;
       baseMint = serumBaseMint;
       quoteMint = serumQuoteMint;
@@ -193,7 +196,7 @@ const getAccountInfo = async (_address) => {
 
     const config = {
       method: 'post',
-      url: 'https://solana-api.projectserum.com',
+      url: RPC_URL,
       headers: {
         'Content-Type': 'application/json'
       },

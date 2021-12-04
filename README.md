@@ -22,7 +22,7 @@ An example usage can be found on index.js file with pre-loaded (RAYDIUM) and(ORC
   await getVaultData(
     POOLS.RAYDIUM,
     "RAY-USDC",
-    "f97zRpxzr8ZmacmeWvTxpJDNVdEJeVJtqhM9cAnekca",
+    "H5WK8gBgjRzdvRuC6tdoNRNjrfnxrmifjgxiAmShagmn",
   );
 ```
 
